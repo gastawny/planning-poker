@@ -8,13 +8,13 @@
 
 ### Tasks
 
-#### [ ] 1.1 Repository & folder structure
+#### [x] 1.1 Repository & folder structure
 
 - Create a monorepo repository with the following structure: an `apps/` directory containing `server/` (Elysia + Bun) and `web/` (TanStack Start + React); a `packages/` directory containing a `types/` package for shared types; a `docker/` directory for Dockerfiles; and Docker Compose files at the root for both development and production.
 - Configure Bun workspaces in the root `package.json` so all packages are linked and share a single lockfile.
 - Add `.gitignore`, `.editorconfig`, and a `README.md` with local setup instructions.
 
-#### [ ] 1.2 Server project setup (Elysia)
+#### [x] 1.2 Server project setup (Elysia)
 
 - Initialize the server project using Elysia with Bun as the runtime.
 - Install base dependencies: Elysia, the Elysia WebSocket plugin, and ioredis.
@@ -23,7 +23,7 @@
 - Configure Biome as the linter and formatter for the server project. Set up the `biome.json` config file with lint and format rules at the workspace root so both `apps/server` and `apps/web` share the same configuration. Add `bun run lint` and `bun run format` scripts.
 - Create a config module that reads all required environment variables with safe fallback defaults for local development: server port, Redis URL, room TTL in seconds, and the public app URL.
 
-#### [ ] 1.3 Frontend project setup (TanStack Start)
+#### [x] 1.3 Frontend project setup (TanStack Start)
 
 - Initialize the frontend project with TanStack Start.
 - Install dependencies: React, Tailwind CSS, and TanStack Router.
@@ -31,29 +31,29 @@
 - The frontend project is covered by the shared Biome configuration defined in 1.2 — no separate linter setup is needed.
 - Define the folder structure inside `src/`: routes, components, hooks, lib, and styles.
 
-#### [ ] 1.4 Shared types package
+#### [x] 1.4 Shared types package
 
 - Create the `packages/types` package with a main entry point.
 - Define the core domain types shared between server and client: user roles (`facilitator`, `participant`, `spectator`), round phases (`waiting`, `voting`, `revealed`), the `RoomUser` entity (id, name, role, hasVoted, connectedAt), and the `RoomState` entity (roomId, hostId, phase, taskName, scale, specialCards, users).
 - Define discriminated union types for all WebSocket events in both directions (client-to-server and server-to-client). Each event must have a `type` string field as the discriminator.
 
-#### [ ] 1.5 Development Docker Compose
+#### [x] 1.5 Development Docker Compose
 
 - Create a `docker-compose.dev.yml` file that starts a Redis container with its port exposed locally.
 - Document the command to bring up the development environment in the README.
 
-#### [ ] 1.6 Basic CI pipeline
+#### [x] 1.6 Basic CI pipeline
 
 - Set up a CI workflow (GitHub Actions or equivalent) that runs on every push and pull request.
 - The workflow must: install dependencies, run the TypeScript type checker with `--noEmit`, and run Biome across all packages for both linting and formatting checks.
 
 ### Acceptance Criteria
 
-- [ ] Running the install command at the root installs all workspace dependencies without errors.
-- [ ] The server starts in development mode on the configured port.
-- [ ] The frontend starts in development mode with hot reload.
-- [ ] Redis starts via Docker Compose and the server connects to it without errors.
-- [ ] The CI pipeline passes on the initial commit.
+- [x] Running the install command at the root installs all workspace dependencies without errors.
+- [x] The server starts in development mode on the configured port.
+- [x] The frontend starts in development mode with hot reload.
+- [x] Redis starts via Docker Compose and the server connects to it without errors.
+- [x] The CI pipeline passes on the initial commit.
 
 ---
 
@@ -63,19 +63,19 @@
 
 ### Tasks
 
-#### [ ] 2.1 Redis service
+#### [x] 2.1 Redis service
 
 - Create a Redis service module with a singleton client instance using ioredis.
 - Implement utility functions to get, set, and delete the full room state in Redis.
 - Apply the configured TTL whenever a room state is saved, so inactive rooms are automatically cleaned up.
 - Add connection error handling: log the error and trigger a graceful shutdown if Redis is unreachable at startup.
 
-#### [ ] 2.2 ID generation
+#### [x] 2.2 ID generation
 
 - Create an ID generation module with two functions: one that generates a short, human-readable room ID (e.g., 6 alphanumeric characters with a hyphen separator), and one that generates a user ID using UUID v4.
 - The room ID generator must check Redis for collisions before returning a new ID.
 
-#### [ ] 2.3 Room creation endpoint
+#### [x] 2.3 Room creation endpoint
 
 - Implement `POST /rooms` that accepts the host's display name in the request body.
 - Validate that the name is present and between 2 and 30 characters. Return a 400 error with a clear message if validation fails.
@@ -83,19 +83,19 @@
 - Create the initial room state in Redis: phase set to `waiting`, default Fibonacci scale, special cards `?` and `∞`, empty user list, and null task name.
 - Return the room ID, host user ID, and the full invite URL.
 
-#### [ ] 2.4 Room lookup endpoint
+#### [x] 2.4 Room lookup endpoint
 
 - Implement `GET /rooms/:roomId` that returns whether the room exists, its current phase, and the current user count.
 - This endpoint is used by the frontend to validate a room before attempting to join.
 
-#### [ ] 2.5 WebSocket handler
+#### [x] 2.5 WebSocket handler
 
 - Implement the WebSocket endpoint at `GET /rooms/:roomId/ws`.
 - On connection open: verify the room exists in Redis and reject with a close code of `4004` if it does not. Then wait for the `room:join` event from the client. If the event is not received within 10 seconds, close the connection.
 - On connection close: remove the user from the room's user list in Redis. Broadcast a `user:left` event to remaining users. If the room becomes empty, schedule deletion after 60 seconds, checking first before deleting in case someone rejoined. If the disconnected user was the host, promote the longest-connected remaining participant as the new host.
 - On message received: parse the JSON payload. Ignore silently if malformed. Dispatch to the appropriate event handler based on the `type` field.
 
-#### [ ] 2.6 `room:join` event handler
+#### [x] 2.6 `room:join` event handler
 
 - Accept a payload with the user's display name and their chosen role (either `participant` or `spectator`; joining directly as `facilitator` is not allowed).
 - Validate: name is required and between 2 and 30 characters; role must be one of the two allowed values; the room must not exceed 20 users.
@@ -103,19 +103,19 @@
 - Send the complete current room state to the joining user.
 - Broadcast a `user:joined` event with the new user's data to all other connected users.
 
-#### [ ] 2.7 In-memory connection manager
+#### [x] 2.7 In-memory connection manager
 
 - Create a connection manager module that maintains a map of room IDs to maps of user IDs to WebSocket instances.
 - Implement functions to: add a connection, remove a connection, broadcast a payload to all users in a room (with an optional exclusion list), and send a payload to a specific user.
 
 ### Acceptance Criteria
 
-- [ ] `POST /rooms` creates the room in Redis and returns the room ID, host ID, and invite URL.
-- [ ] `GET /rooms/:roomId` returns `exists: false` for unknown rooms.
-- [ ] A WebSocket client can connect, send `room:join`, and receive the full room state.
-- [ ] A second client joining receives the room state and the first client receives `user:joined`.
-- [ ] Disconnecting removes the user and remaining users receive `user:left`.
-- [ ] Connecting to a non-existent room closes the WebSocket with code `4004`.
+- [x] `POST /rooms` creates the room in Redis and returns the room ID, host ID, and invite URL.
+- [x] `GET /rooms/:roomId` returns `exists: false` for unknown rooms.
+- [x] A WebSocket client can connect, send `room:join`, and receive the full room state.
+- [x] A second client joining receives the room state and the first client receives `user:joined`.
+- [x] Disconnecting removes the user and remaining users receive `user:left`.
+- [x] Connecting to a non-existent room closes the WebSocket with code `4004`.
 
 ---
 

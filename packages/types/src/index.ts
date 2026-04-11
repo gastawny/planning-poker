@@ -14,22 +14,19 @@ export interface RoomState {
   roomId: string;
   hostId: string;
   phase: RoundPhase;
-  taskName: string;
+  taskName: string | null;
   scale: string[];
   specialCards: string[];
+  votes: Record<string, string>;
   users: RoomUser[];
 }
 
 // Client → Server events
-export type ClientEvent =
-  | { type: "join"; roomId: string; userId: string; name: string; role: UserRole }
-  | { type: "vote"; roomId: string; userId: string; card: string }
-  | { type: "reveal"; roomId: string; userId: string }
-  | { type: "reset"; roomId: string; userId: string; taskName?: string };
+export type ClientEvent = { type: "room:join"; name: string; role: "participant" | "spectator" };
 
 // Server → Client events
 export type ServerEvent =
-  | { type: "room_state"; state: RoomState }
-  | { type: "user_joined"; user: RoomUser }
-  | { type: "user_left"; userId: string }
-  | { type: "error"; message: string };
+  | { type: "room:state"; state: RoomState }
+  | { type: "user:joined"; user: RoomUser }
+  | { type: "user:left"; userId: string }
+  | { type: "error"; code: string; message: string };

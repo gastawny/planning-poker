@@ -19,6 +19,6 @@
     }
   },
   "files": {
-    "ignore": ["node_modules", "dist", ".turbo", "build", ".claude"]
+    "ignore": ["node_modules", "dist", ".turbo", "build", ".claude", "**/routeTree.gen.ts"]
   }
 }
