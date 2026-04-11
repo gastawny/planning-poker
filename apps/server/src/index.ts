@@ -5,16 +5,17 @@ import { handleDisconnect } from "@/handlers/on-disconnect";
 import { handleRoomJoin } from "@/handlers/room-join";
 import { handleRoundReset } from "@/handlers/round-reset";
 import { handleRoundStart } from "@/handlers/round-start";
+import { handleScaleReset } from "@/handlers/scale-reset";
+import { handleScaleUpdate } from "@/handlers/scale-update";
 import { handleVoteRetract } from "@/handlers/vote-retract";
 import { handleVoteReveal } from "@/handlers/vote-reveal";
 import { handleVoteSubmit } from "@/handlers/vote-submit";
 import { generateRoomId, generateUserId } from "@/lib/ids";
+import { DEFAULT_SCALE, DEFAULT_SPECIAL_CARDS } from "@/lib/scales";
 import { getRoom, saveRoom } from "@/services/redis";
 import type { ClientEvent, RoomState } from "@planning-poker/types";
 import { Elysia } from "elysia";
 
-const DEFAULT_SCALE = ["1", "2", "3", "5", "8", "13", "21"];
-const DEFAULT_SPECIAL_CARDS = ["?", "∞"];
 const JOIN_TIMEOUT_MS = 10_000;
 
 type ConnectionState = {
@@ -139,6 +140,12 @@ const app = new Elysia()
             break;
           case "round:reset":
             await handleRoundReset(ws, state.roomId, state.userId);
+            break;
+          case "scale:update":
+            await handleScaleUpdate(ws, event, state.roomId, state.userId);
+            break;
+          case "scale:reset":
+            await handleScaleReset(ws, state.roomId, state.userId);
             break;
         }
       }

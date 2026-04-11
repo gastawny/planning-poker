@@ -238,13 +238,13 @@
 
 ### Tasks
 
-#### [ ] 5.1 Scale presets and validation
+#### [x] 5.1 Scale presets and validation
 
 - Define the three Fibonacci presets in a dedicated module: short (`1, 2, 3, 5, 8`), standard (`1, 2, 3, 5, 8, 13, 21`), and long (`1, 2, 3, 5, 8, 13, 21, 34, 55, 89`). The standard preset is the default.
 - Define the default special cards as `?` and `∞`, and `☕` as an optional extra.
 - Implement a scale validation function that enforces: at least 2 values, at most 15 values, all values must be positive integers, no duplicates, and values must be in ascending order. The function must return a structured result with a validity flag and an error message when invalid.
 
-#### [ ] 5.2 `scale:update` event handler
+#### [x] 5.2 `scale:update` event handler
 
 - Only the facilitator can update the scale.
 - Accept a payload with the numeric scale array and an optional list of special cards to include.
@@ -254,7 +254,7 @@
 - Save the new scale and special cards to Redis.
 - Broadcast a `scale:updated` event to all users in the room, including the new scale, the new special cards list, and a boolean flag indicating whether votes were cleared.
 
-#### [ ] 5.3 `scale:reset` event handler
+#### [x] 5.3 `scale:reset` event handler
 
 - Only the facilitator can reset.
 - Restore the scale to the standard Fibonacci preset and the special cards to `?` and `∞`.
@@ -263,12 +263,12 @@
 
 ### Acceptance Criteria
 
-- [ ] The facilitator sends a valid `scale:update` and all clients receive `scale:updated` with the new cards.
-- [ ] A payload with fewer than 2 values returns `INVALID_PAYLOAD`.
-- [ ] A payload with non-integer or negative values returns `INVALID_PAYLOAD`.
-- [ ] Changing the scale during an active vote clears votes and `votesCleared: true` is included in the broadcast.
-- [ ] `scale:reset` restores default values and broadcasts to all clients.
-- [ ] `?` and `∞` are always present in the special cards even when not explicitly sent in the payload.
+- [x] The facilitator sends a valid `scale:update` and all clients receive `scale:updated` with the new cards.
+- [x] A payload with fewer than 2 values returns `INVALID_PAYLOAD`.
+- [x] A payload with non-integer or negative values returns `INVALID_PAYLOAD`.
+- [x] Changing the scale during an active vote clears votes and `votesCleared: true` is included in the broadcast.
+- [x] `scale:reset` restores default values and broadcasts to all clients.
+- [x] `?` and `∞` are always present in the special cards even when not explicitly sent in the payload.
 
 ---
 

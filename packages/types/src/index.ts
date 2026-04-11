@@ -37,7 +37,9 @@ export type ClientEvent =
   | { type: "vote:submit"; value: string }
   | { type: "vote:retract" }
   | { type: "vote:reveal" }
-  | { type: "round:reset" };
+  | { type: "round:reset" }
+  | { type: "scale:update"; scale: string[]; specialCards?: string[] }
+  | { type: "scale:reset" };
 
 // Server → Client events
 export type ServerEvent =
@@ -55,4 +57,5 @@ export type ServerEvent =
       nonVoters: string[];
     }
   | { type: "round:reset" }
+  | { type: "scale:updated"; scale: string[]; specialCards: string[]; votesCleared: boolean }
   | { type: "error"; code: string; message: string };
