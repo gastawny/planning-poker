@@ -3,6 +3,11 @@ import { handleChangeRole } from "@/handlers/change-role";
 import { handleKick } from "@/handlers/kick";
 import { handleDisconnect } from "@/handlers/on-disconnect";
 import { handleRoomJoin } from "@/handlers/room-join";
+import { handleRoundReset } from "@/handlers/round-reset";
+import { handleRoundStart } from "@/handlers/round-start";
+import { handleVoteRetract } from "@/handlers/vote-retract";
+import { handleVoteReveal } from "@/handlers/vote-reveal";
+import { handleVoteSubmit } from "@/handlers/vote-submit";
 import { generateRoomId, generateUserId } from "@/lib/ids";
 import { getRoom, saveRoom } from "@/services/redis";
 import type { ClientEvent, RoomState } from "@planning-poker/types";
@@ -119,6 +124,21 @@ const app = new Elysia()
             break;
           case "room:kick":
             await handleKick(ws, event, state.roomId, state.userId);
+            break;
+          case "round:start":
+            await handleRoundStart(ws, event, state.roomId, state.userId);
+            break;
+          case "vote:submit":
+            await handleVoteSubmit(ws, event, state.roomId, state.userId);
+            break;
+          case "vote:retract":
+            await handleVoteRetract(ws, event, state.roomId, state.userId);
+            break;
+          case "vote:reveal":
+            await handleVoteReveal(ws, state.roomId, state.userId);
+            break;
+          case "round:reset":
+            await handleRoundReset(ws, state.roomId, state.userId);
             break;
         }
       }

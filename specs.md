@@ -125,13 +125,13 @@
 
 ### Tasks
 
-#### [ ] 3.1 Authorization middleware
+#### [x] 3.1 Authorization middleware
 
 - Create an authorization utility that, given a room ID and user ID, checks whether the user holds a required role or one of a set of allowed roles.
 - Throw a standardized permission error if the check fails.
 - Apply this utility at the top of every event handler that requires a specific role.
 
-#### [ ] 3.2 `user:change_role` event handler
+#### [x] 3.2 `user:change_role` event handler
 
 - Accept a payload with the target user ID and the desired new role (`participant` or `spectator`).
 - Permission rules: any user may change their own role between `participant` and `spectator`; only the facilitator may change another user's role; no one can change the facilitator's role via this event; no one can assign the `facilitator` role via this event.
@@ -140,17 +140,17 @@
 - Broadcast a `user:role_changed` event with the user ID and new role to all users in the room.
 - If the role change causes all participants to have voted (e.g., a participant who had not voted becomes a spectator and all remaining participants had already voted), also emit the all-voted notification.
 
-#### [ ] 3.3 Voting permission guard
+#### [x] 3.3 Voting permission guard
 
 - Add a role check at the start of the `vote:submit` handler (to be implemented in M4): reject with a permission error if the user's role is `spectator`.
 
-#### [ ] 3.4 `room:kick` event handler _(optional v1)_
+#### [x] 3.4 `room:kick` event handler _(optional v1)_
 
 - Accept a payload with the target user ID.
 - Only the facilitator may execute this action.
 - Remove the target user from the room state, close their WebSocket connection with close code `4003`, and broadcast a `user:left` event with a `kicked: true` flag.
 
-#### [ ] 3.5 Standardized error format
+#### [x] 3.5 Standardized error format
 
 - Define and document a single error event format sent to the client whenever an operation fails.
 - Error codes to cover: `PERMISSION_DENIED`, `INVALID_PAYLOAD`, `ROOM_NOT_FOUND`, `ROOM_FULL`, and `INVALID_PHASE`.
@@ -158,12 +158,12 @@
 
 ### Acceptance Criteria
 
-- [ ] A participant can change their own role to spectator and back.
-- [ ] The facilitator can change another user's role.
-- [ ] A non-facilitator cannot change another user's role and receives `PERMISSION_DENIED`.
-- [ ] When a participant becomes a spectator, their vote is removed and progress is recalculated.
-- [ ] When a spectator becomes a participant during voting, they are added to the pending voter count.
-- [ ] The `user:role_changed` broadcast reaches all clients in the room.
+- [x] A participant can change their own role to spectator and back.
+- [x] The facilitator can change another user's role.
+- [x] A non-facilitator cannot change another user's role and receives `PERMISSION_DENIED`.
+- [x] When a participant becomes a spectator, their vote is removed and progress is recalculated.
+- [x] When a spectator becomes a participant during voting, they are added to the pending voter count.
+- [x] The `user:role_changed` broadcast reaches all clients in the room.
 
 ---
 
@@ -173,7 +173,7 @@
 
 ### Tasks
 
-#### [ ] 4.1 `round:start` event handler
+#### [x] 4.1 `round:start` event handler
 
 - Only the facilitator can start a round.
 - Only allowed when the current phase is `waiting` or `revealed`.
@@ -181,7 +181,7 @@
 - Clear all votes from the previous round in Redis, reset `hasVoted` to `false` for all participants, update the phase to `voting`, and update the task name.
 - Broadcast a `round:started` event with the task name to all users in the room.
 
-#### [ ] 4.2 `vote:submit` event handler
+#### [x] 4.2 `vote:submit` event handler
 
 - Only allowed for users with the `participant` role.
 - Only allowed when the current phase is `voting`.
@@ -190,14 +190,14 @@
 - Broadcast a `vote:progress` event to all users that includes the voter's user ID, the total number of votes cast, and the total number of participants — but never the vote value itself.
 - After saving, call the all-voted check function. If all participants have voted, broadcast a `vote:all_voted` event to the room.
 
-#### [ ] 4.3 `vote:retract` event handler
+#### [x] 4.3 `vote:retract` event handler
 
 - A user can only retract their own vote.
 - Only allowed when the current phase is `voting`.
 - Remove the vote from Redis and set `hasVoted` back to `false`.
 - Broadcast an updated `vote:progress` event reflecting the new count.
 
-#### [ ] 4.4 `vote:reveal` event handler
+#### [x] 4.4 `vote:reveal` event handler
 
 - Only the facilitator can reveal.
 - Only allowed when the current phase is `voting`.
@@ -206,14 +206,14 @@
 - Update the room phase to `revealed` in Redis.
 - Broadcast a `vote:revealed` event containing the vote value for each participant, the computed statistics, and the list of user IDs who did not vote.
 
-#### [ ] 4.5 `round:reset` event handler
+#### [x] 4.5 `round:reset` event handler
 
 - Only the facilitator can reset.
 - Allowed in any phase.
 - Clear all votes, reset `hasVoted` for all participants, and set the phase back to `waiting`.
 - Broadcast a `round:reset` event to all users.
 
-#### [ ] 4.6 "All voted" check logic
+#### [x] 4.6 "All voted" check logic
 
 - Extract the all-voted logic into a standalone reusable function.
 - The function must consider only users whose role is `participant`.
@@ -222,13 +222,13 @@
 
 ### Acceptance Criteria
 
-- [ ] The facilitator starts a round and all clients receive `round:started`.
-- [ ] A participant submits a vote and all clients receive `vote:progress` without the vote value.
-- [ ] A participant retracts a vote and the progress is updated for all clients.
-- [ ] A spectator attempting to vote receives `PERMISSION_DENIED`.
-- [ ] When the last participant votes, all clients receive `vote:all_voted`.
-- [ ] The facilitator reveals and all clients receive `vote:revealed` with values and statistics.
-- [ ] The facilitator resets and all clients receive `round:reset`.
+- [x] The facilitator starts a round and all clients receive `round:started`.
+- [x] A participant submits a vote and all clients receive `vote:progress` without the vote value.
+- [x] A participant retracts a vote and the progress is updated for all clients.
+- [x] A spectator attempting to vote receives `PERMISSION_DENIED`.
+- [x] When the last participant votes, all clients receive `vote:all_voted`.
+- [x] The facilitator reveals and all clients receive `vote:revealed` with values and statistics.
+- [x] The facilitator resets and all clients receive `round:reset`.
 
 ---
 

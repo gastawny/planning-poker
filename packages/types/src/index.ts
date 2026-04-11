@@ -21,11 +21,23 @@ export interface RoomState {
   users: RoomUser[];
 }
 
+export interface VoteStats {
+  mean: number;
+  mode: string[];
+  min: number;
+  max: number;
+}
+
 // Client → Server events
 export type ClientEvent =
   | { type: "room:join"; name: string; role: "participant" | "spectator" }
   | { type: "user:change_role"; targetUserId: string; newRole: "participant" | "spectator" }
-  | { type: "room:kick"; targetUserId: string };
+  | { type: "room:kick"; targetUserId: string }
+  | { type: "round:start"; taskName?: string }
+  | { type: "vote:submit"; value: string }
+  | { type: "vote:retract" }
+  | { type: "vote:reveal" }
+  | { type: "round:reset" };
 
 // Server → Client events
 export type ServerEvent =
@@ -34,4 +46,13 @@ export type ServerEvent =
   | { type: "user:left"; userId: string; kicked?: boolean }
   | { type: "user:role_changed"; userId: string; newRole: UserRole }
   | { type: "vote:all_voted" }
+  | { type: "round:started"; taskName: string | null }
+  | { type: "vote:progress"; userId: string; votesCount: number; participantsCount: number }
+  | {
+      type: "vote:revealed";
+      votes: Record<string, string>;
+      stats: VoteStats | null;
+      nonVoters: string[];
+    }
+  | { type: "round:reset" }
   | { type: "error"; code: string; message: string };

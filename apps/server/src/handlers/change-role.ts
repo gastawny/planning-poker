@@ -1,6 +1,7 @@
 import { PermissionError, assertRole } from "@/lib/auth";
 import { broadcast } from "@/lib/connections";
 import { ErrorCode, sendError } from "@/lib/errors";
+import { checkAllVoted } from "@/lib/voting";
 import { getRoom, saveRoom } from "@/services/redis";
 import type { ClientEvent } from "@planning-poker/types";
 
@@ -8,12 +9,6 @@ type ChangeRolePayload = Extract<ClientEvent, { type: "user:change_role" }>;
 
 interface WsLike {
   send(data: string): void;
-}
-
-function checkAllVoted(room: Parameters<typeof saveRoom>[1]): boolean {
-  const participants = room.users.filter((u) => u.role === "participant");
-  if (participants.length === 0) return false;
-  return participants.every((u) => u.hasVoted);
 }
 
 export async function handleChangeRole(
