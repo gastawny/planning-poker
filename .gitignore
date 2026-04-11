@@ -1,0 +1,22 @@
+node_modules/
+dist/
+build/
+.turbo/
+*.local
+
+# Environment variables
+.env
+!.env.example
+
+# Bun
+bun.lock
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
