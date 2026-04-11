@@ -1,18 +1,14 @@
 import { addConnection, broadcast, sendTo } from "@/lib/connections";
+import { ErrorCode, sendError } from "@/lib/errors";
 import { generateUserId } from "@/lib/ids";
 import { getRoom, saveRoom } from "@/services/redis";
-import type { ClientEvent, RoomUser, ServerEvent } from "@planning-poker/types";
+import type { ClientEvent, RoomUser } from "@planning-poker/types";
 
 type JoinPayload = Extract<ClientEvent, { type: "room:join" }>;
 
 interface WsLike {
   send(data: string): void;
   close(code?: number, reason?: string): void;
-}
-
-function sendError(ws: WsLike, code: string, message: string): void {
-  const payload: ServerEvent = { type: "error", code, message };
-  ws.send(JSON.stringify(payload));
 }
 
 export async function handleRoomJoin(
@@ -23,24 +19,24 @@ export async function handleRoomJoin(
   const { name, role } = payload;
 
   if (!name || name.length < 2 || name.length > 30) {
-    sendError(ws, "INVALID_PAYLOAD", "Name must be between 2 and 30 characters");
+    sendError(ws, ErrorCode.INVALID_PAYLOAD, "Name must be between 2 and 30 characters");
     return null;
   }
 
   if (role !== "participant" && role !== "spectator") {
-    sendError(ws, "INVALID_PAYLOAD", "Role must be participant or spectator");
+    sendError(ws, ErrorCode.INVALID_PAYLOAD, "Role must be participant or spectator");
     return null;
   }
 
   const room = await getRoom(roomId);
   if (!room) {
-    sendError(ws, "ROOM_NOT_FOUND", "Room does not exist");
+    sendError(ws, ErrorCode.ROOM_NOT_FOUND, "Room does not exist");
     ws.close(4004, "Room not found");
     return null;
   }
 
   if (room.users.length >= 20) {
-    sendError(ws, "ROOM_FULL", "Room has reached the maximum of 20 users");
+    sendError(ws, ErrorCode.ROOM_FULL, "Room has reached the maximum of 20 users");
     return null;
   }
 

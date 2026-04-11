@@ -1,4 +1,6 @@
 import { env } from "@/env";
+import { handleChangeRole } from "@/handlers/change-role";
+import { handleKick } from "@/handlers/kick";
 import { handleDisconnect } from "@/handlers/on-disconnect";
 import { handleRoomJoin } from "@/handlers/room-join";
 import { generateRoomId, generateUserId } from "@/lib/ids";
@@ -106,6 +108,18 @@ const app = new Elysia()
           state.joined = true;
         } else {
           pendingConnections.delete(ws.id);
+        }
+        return;
+      }
+
+      if (state.joined && state.userId) {
+        switch (event.type) {
+          case "user:change_role":
+            await handleChangeRole(ws, event, state.roomId, state.userId);
+            break;
+          case "room:kick":
+            await handleKick(ws, event, state.roomId, state.userId);
+            break;
         }
       }
     },

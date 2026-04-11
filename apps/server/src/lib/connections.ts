@@ -2,6 +2,7 @@ import type { ServerEvent } from "@planning-poker/types";
 
 interface WsLike {
   send(data: string): void;
+  close(code?: number, reason?: string): void;
 }
 
 const rooms = new Map<string, Map<string, WsLike>>();
@@ -40,6 +41,16 @@ export function broadcast(
 export function sendTo(roomId: string, userId: string, payload: ServerEvent): void {
   const ws = rooms.get(roomId)?.get(userId);
   if (ws) ws.send(JSON.stringify(payload));
+}
+
+export function closeConnection(
+  roomId: string,
+  userId: string,
+  code?: number,
+  reason?: string
+): void {
+  const ws = rooms.get(roomId)?.get(userId);
+  if (ws) ws.close(code, reason);
 }
 
 export function getConnectionCount(roomId: string): number {
