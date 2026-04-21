@@ -72,6 +72,7 @@ function CreateRoomForm() {
       </div>
       <Input
         id="create-name"
+        data-testid="create-name-input"
         label="Your name"
         placeholder="e.g. Alice"
         value={name}
@@ -80,7 +81,7 @@ function CreateRoomForm() {
         maxLength={30}
         autoComplete="nickname"
       />
-      <Button type="submit" loading={loading} className="w-full">
+      <Button type="submit" data-testid="create-room-submit" loading={loading} className="w-full">
         Create room
       </Button>
     </form>

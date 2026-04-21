@@ -33,6 +33,11 @@ export async function handleScaleUpdate(
     throw err;
   }
 
+  if (!Array.isArray(payload.scale)) {
+    sendError(ws, ErrorCode.INVALID_PAYLOAD, "scale must be an array");
+    return;
+  }
+
   const validation = validateScale(payload.scale);
   if (!validation.valid) {
     sendError(ws, ErrorCode.INVALID_PAYLOAD, validation.error);

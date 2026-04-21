@@ -23,7 +23,7 @@ export function VotingArea({ roomState, myUser, isFacilitator, taskName, send }:
   const { phase, users, scale, specialCards, votes } = roomState;
 
   return (
-    <div className="w-full max-w-3xl flex flex-col items-center gap-8">
+    <div className="w-full max-w-3xl flex flex-col items-center gap-8" data-testid="voting-area">
       {isFacilitator && <FacilitatorPanel phase={phase} taskName={taskName} send={send} />}
 
       {phase === "voting" && (

@@ -37,7 +37,7 @@ export function CardDeck({
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4" data-testid="card-deck">
       <div className={isDisabled ? "pointer-events-none opacity-50" : ""}>
         <div className="flex flex-wrap gap-3 justify-center">
           {allCards.map((value) => {
@@ -46,6 +46,7 @@ export function CardDeck({
               <button
                 key={value}
                 type="button"
+                data-testid={`card-${value}`}
                 onClick={() => handleCardClick(value)}
                 className={`w-14 h-20 rounded-lg border-2 flex items-center justify-center text-lg font-bold transition-all duration-150 select-none ${
                   isSelected

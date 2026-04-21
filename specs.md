@@ -488,50 +488,50 @@
 
 ### Tasks
 
-#### [ ] 10.1 Backend integration tests
+#### [x] 10.1 Backend integration tests
 
 - Use Bun's native test runner.
 - Write integration tests covering the WebSocket event handlers for the following scenarios: `room:join` (success, room full, room not found, invalid name); `vote:submit` (success, spectator tries to vote, value not in scale, wrong phase); `user:change_role` (self change, facilitator changes another, non-facilitator tries to change another); `scale:update` (valid scale, fewer than 2 values, during active voting with vote clearing); `vote:reveal` (success, no votes, partial votes).
 - Use a mocked or isolated Redis instance for all tests.
 
-#### [ ] 10.2 Unit tests
+#### [x] 10.2 Unit tests
 
 - Write unit tests for: the `checkAllVoted` function (all voted, none voted, spectators ignored, no participants present); the `validateScale` function (valid input, duplicates, non-integer values, negative values, descending order); the vote statistics calculation (identical votes, varied votes, only special cards, no votes at all).
 
-#### [ ] 10.3 Reconnection and resilience
+#### [x] 10.3 Reconnection and resilience
 
 - Verify that when a client reconnects after a dropped connection, it receives `room:state` and the UI is fully restored.
 - Verify that a reconnecting participant's previous vote is preserved if the round is still in the `voting` phase.
 - Implement a grace period of approximately 5 seconds before promoting a new host when the facilitator disconnects, so that brief reconnections do not trigger unnecessary host reassignment.
 - Verify that when all users leave a room, the scheduled Redis deletion fires and the room key is removed after the grace period.
 
-#### [ ] 10.4 Voting edge cases
+#### [x] 10.4 Voting edge cases
 
 - Verify that if a participant switches to spectator at the exact moment all other participants finish voting, the `vote:all_voted` event is correctly emitted.
 - Verify that if a spectator joins as a participant during `voting`, the all-voted check does not fire prematurely.
 - Verify that `vote:reveal` with zero votes produces a valid response with empty arrays and null statistics rather than an error.
 
-#### [ ] 10.5 Payload validation hardening
+#### [x] 10.5 Payload validation hardening
 
 - Audit all WebSocket event handlers to confirm that every possible malformed or unexpected payload returns an `INVALID_PAYLOAD` error without throwing an unhandled exception.
 - Add schema validation using Elysia's built-in TypeBox integration to all HTTP endpoints.
 
-#### [ ] 10.6 Smoke tests (E2E)
+#### [x] 10.6 Smoke tests (E2E)
 
 - Write an E2E test using Playwright or a similar tool that covers the core flow: facilitator creates a room; a participant joins via the invite link; a spectator joins via the invite link; the facilitator starts voting; the participant votes; the facilitator reveals the cards; the facilitator starts a new round.
 
-#### [ ] 10.7 Performance and limits
+#### [x] 10.7 Performance and limits
 
 - Test with 20 simultaneous users in a single room (the defined maximum) and verify that all broadcast messages are delivered in under 500 ms in a local environment.
 - Verify that the Redis TTL is applied correctly and that an inactive room is automatically removed after the configured duration.
 
 ### Acceptance Criteria
 
-- [ ] All unit and integration tests pass.
-- [ ] The basic E2E flow completes without errors.
-- [ ] Reconnection restores the correct room state for all user roles.
-- [ ] Role-change edge cases during voting are handled correctly.
-- [ ] Malformed payloads do not crash the server.
+- [x] All unit and integration tests pass.
+- [x] The basic E2E flow completes without errors.
+- [x] Reconnection restores the correct room state for all user roles.
+- [x] Role-change edge cases during voting are handled correctly.
+- [x] Malformed payloads do not crash the server.
 
 ---
 

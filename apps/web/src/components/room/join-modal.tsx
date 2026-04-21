@@ -29,7 +29,10 @@ export function JoinModal({ onJoin }: JoinModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      data-testid="join-modal"
+    >
       <dialog
         open
         aria-labelledby="join-modal-title"
@@ -43,6 +46,7 @@ export function JoinModal({ onJoin }: JoinModalProps) {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
           <Input
             id="modal-name"
+            data-testid="join-name-input"
             label="Your name"
             placeholder="e.g. Alice"
             value={name}
@@ -67,6 +71,7 @@ export function JoinModal({ onJoin }: JoinModalProps) {
                     value={r}
                     checked={role === r}
                     onChange={() => setRole(r)}
+                    data-testid={`join-role-${r}`}
                     className="accent-indigo-600"
                   />
                   {r.charAt(0).toUpperCase() + r.slice(1)}
@@ -75,7 +80,7 @@ export function JoinModal({ onJoin }: JoinModalProps) {
             </div>
           </fieldset>
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" data-testid="join-submit" className="w-full">
             Join room
           </Button>
         </form>

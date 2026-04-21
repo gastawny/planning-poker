@@ -67,7 +67,10 @@ export function ResultsPanel({ users, votes, stats, nonVoters }: ResultsPanelPro
       )}
 
       {stats !== null && (
-        <div className="flex items-center gap-4 text-sm text-zinc-600 bg-zinc-50 rounded-lg px-5 py-3 border border-zinc-200">
+        <div
+          data-testid="stats-panel"
+          className="flex items-center gap-4 text-sm text-zinc-600 bg-zinc-50 rounded-lg px-5 py-3 border border-zinc-200"
+        >
           <dl className="flex items-center gap-1">
             <dt className="text-zinc-400">Mean</dt>
             <dd className="font-semibold text-zinc-800">{stats.mean.toFixed(1)}</dd>
