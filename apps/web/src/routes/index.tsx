@@ -52,9 +52,10 @@ function CreateRoomForm() {
         addToast("error", body.message ?? "Failed to create room");
         return;
       }
-      const { roomId } = (await res.json()) as { roomId: string };
+      const { roomId, hostId } = (await res.json()) as { roomId: string; hostId: string };
       sessionStorage.setItem("userName", name.trim());
       sessionStorage.setItem("userRole", "facilitator");
+      sessionStorage.setItem("hostId", hostId);
       await navigate({ to: "/room/$roomId", params: { roomId } });
     } catch {
       addToast("error", "Server unreachable. Please try again.");
@@ -131,6 +132,7 @@ function JoinRoomForm() {
       }
       sessionStorage.setItem("userName", name.trim());
       sessionStorage.setItem("userRole", role);
+      sessionStorage.removeItem("hostId");
       await navigate({ to: "/room/$roomId", params: { roomId: roomCode } });
     } catch {
       addToast("error", "Server unreachable. Please try again.");

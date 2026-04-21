@@ -20,6 +20,7 @@ interface RoomStore {
   setUserName: (name: string) => void;
   setSelectedVote: (value: string | null) => void;
 
+  handleRoomJoined: (state: RoomState, userId: string) => void;
   handleRoomState: (state: RoomState) => void;
   handleUserJoined: (user: RoomUser) => void;
   handleUserLeft: (userId: string, kicked?: boolean) => void;
@@ -51,6 +52,16 @@ export const useRoomStore = create<RoomStore>((set) => ({
   setUserId: (id) => set({ userId: id }),
   setUserName: (name) => set({ userName: name }),
   setSelectedVote: (value) => set({ selectedVote: value }),
+
+  handleRoomJoined: (state, userId) =>
+    set((s) => {
+      const user = state.users.find((u) => u.id === userId);
+      return {
+        roomState: state,
+        userId,
+        userName: user?.name ?? s.userName,
+      };
+    }),
 
   handleRoomState: (state) => set({ roomState: state }),
 

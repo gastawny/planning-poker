@@ -4,7 +4,7 @@ import { generateUserId } from "@/lib/ids";
 import { getRoom, saveRoom } from "@/services/redis";
 import type { ClientEvent, RoomUser } from "@planning-poker/types";
 
-type JoinPayload = Extract<ClientEvent, { type: "room:join" }>;
+type JoinPayload = Extract<ClientEvent, { type: "room:join" }> & { hostId?: string };
 
 interface WsLike {
   send(data: string): void;
@@ -16,7 +16,7 @@ export async function handleRoomJoin(
   payload: JoinPayload,
   roomId: string
 ): Promise<string | null> {
-  const { name, role } = payload;
+  const { name, role, hostId } = payload;
 
   if (!name || name.length < 2 || name.length > 30) {
     sendError(ws, ErrorCode.INVALID_PAYLOAD, "Name must be between 2 and 30 characters");
@@ -40,10 +40,12 @@ export async function handleRoomJoin(
     return null;
   }
 
+  const assignedRole: RoomUser["role"] = hostId && hostId === room.hostId ? "facilitator" : role;
+
   const user: RoomUser = {
     id: generateUserId(),
     name,
-    role,
+    role: assignedRole,
     hasVoted: false,
     connectedAt: Date.now(),
   };
@@ -53,7 +55,7 @@ export async function handleRoomJoin(
 
   addConnection(roomId, user.id, ws);
 
-  sendTo(roomId, user.id, { type: "room:state", state: room });
+  sendTo(roomId, user.id, { type: "room:joined", state: room, userId: user.id });
   broadcast(roomId, { type: "user:joined", user }, [user.id]);
 
   return user.id;

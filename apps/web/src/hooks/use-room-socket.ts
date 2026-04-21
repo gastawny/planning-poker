@@ -14,6 +14,9 @@ function dispatchServerEvent(event: ServerEvent): void {
   const store = useRoomStore.getState();
 
   switch (event.type) {
+    case "room:joined":
+      store.handleRoomJoined(event.state, event.userId);
+      break;
     case "room:state":
       store.handleRoomState(event.state);
       break;

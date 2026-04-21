@@ -30,7 +30,7 @@ export interface VoteStats {
 
 // Client → Server events
 export type ClientEvent =
-  | { type: "room:join"; name: string; role: "participant" | "spectator" }
+  | { type: "room:join"; name: string; role: "participant" | "spectator"; hostId?: string }
   | { type: "user:change_role"; targetUserId: string; newRole: "participant" | "spectator" }
   | { type: "room:kick"; targetUserId: string }
   | { type: "round:start"; taskName?: string }
@@ -43,6 +43,7 @@ export type ClientEvent =
 
 // Server → Client events
 export type ServerEvent =
+  | { type: "room:joined"; state: RoomState; userId: string }
   | { type: "room:state"; state: RoomState }
   | { type: "user:joined"; user: RoomUser }
   | { type: "user:left"; userId: string; kicked?: boolean }

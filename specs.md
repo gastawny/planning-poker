@@ -278,17 +278,17 @@
 
 ### Tasks
 
-#### [ ] 6.1 Routes
+#### [x] 6.1 Routes
 
 - Configure TanStack Router with three routes: the home page at `/`, the room page at `/room/$roomId`, and a catch-all 404 page that includes a link back to `/`.
 
-#### [ ] 6.2 Home page (`/`)
+#### [x] 6.2 Home page (`/`)
 
 - Build a room creation form with a field for the facilitator's display name and a submit button. On success, call `POST /rooms` and redirect to `/room/$roomId`.
 - Build a join-existing-room form with a field for the room code or link, a field for the user's display name, and a radio group to choose between participant and spectator roles.
 - Handle and display errors clearly: room not found, server unreachable, and invalid input.
 
-#### [ ] 6.3 WebSocket hook (`useRoomSocket`)
+#### [x] 6.3 WebSocket hook (`useRoomSocket`)
 
 - Create a custom hook that manages the WebSocket connection for a given room ID.
 - The hook must handle the full connection lifecycle: connecting, connected, disconnected, and error states.
@@ -296,25 +296,25 @@
 - Expose a typed `send` function for dispatching events to the server, a `connectionStatus` value, and a way to register handlers for incoming events.
 - Clean up the connection when the hook unmounts.
 
-#### [ ] 6.4 Room state store
+#### [x] 6.4 Room state store
 
 - Create a global state store (using Zustand or a `useReducer` + Context pattern) that holds all client-side room state.
 - The store must hold: the room ID, the current user's ID and role, the full room state received from the server, the current user's selected vote (if any), and the current round phase.
 - Define a dedicated updater function for each server-to-client event type: user joined, user left, role changed, vote progress, vote revealed, scale updated, round started, and round reset.
 - The WebSocket hook must call the appropriate store updater for each incoming event.
 
-#### [ ] 6.5 Base UI components
+#### [x] 6.5 Base UI components
 
 - Build the following primitive components that will be used across all pages: Button (with primary, secondary, ghost, and destructive variants), Input (with label, error message, and disabled state), Badge (for displaying user roles and status), Spinner (loading indicator), and Toast/Notification (for errors and confirmations).
 - All components must be keyboard-navigable and include appropriate ARIA attributes.
 
 ### Acceptance Criteria
 
-- [ ] The `/` route renders both forms correctly.
-- [ ] Creating a room redirects to `/room/$roomId` with the correct ID.
-- [ ] `useRoomSocket` connects, receives `room:state`, and populates the store.
-- [ ] `useRoomSocket` attempts automatic reconnection when the connection drops.
-- [ ] Base components render correctly in all their states.
+- [x] The `/` route renders both forms correctly.
+- [x] Creating a room redirects to `/room/$roomId` with the correct ID.
+- [x] `useRoomSocket` connects, receives `room:state`, and populates the store.
+- [x] `useRoomSocket` attempts automatic reconnection when the connection drops.
+- [x] Base components render correctly in all their states.
 
 ---
 
@@ -324,35 +324,35 @@
 
 ### Tasks
 
-#### [ ] 7.1 Room layout (`/room/$roomId`)
+#### [x] 7.1 Room layout (`/room/$roomId`)
 
 - Build a three-area layout: a header with the room name, current phase, task name (when set), and a copy-invite-link button; a sidebar or side panel with the participant and spectator lists; and a central area reserved for the voting cards and results (to be built in M8).
 - Display the WebSocket connection status visibly in the header using a badge or indicator that reflects the current state: connected, reconnecting, or disconnected.
 - If the room does not exist (verified via `GET /rooms/:roomId` on page load), redirect the user to the home page with an informative error message.
 
-#### [ ] 7.2 User list
+#### [x] 7.2 User list
 
 - Build a user list component that groups users into two sections: "Participants" and "Spectators".
 - For each user, display: an avatar with their initials and a color generated deterministically from their name; their display name; a role badge (Facilitator, Participant, or Spectator); a crown icon for the host; and during the `voting` phase, a vote status indicator showing whether they have voted or are still pending.
 
-#### [ ] 7.3 Self role switching
+#### [x] 7.3 Self role switching
 
 - Display a toggle or button for the current user to switch between the Participant and Spectator roles.
 - Do not show this control to the facilitator.
 - On click, send the `user:change_role` event and update the UI optimistically. Revert the change if the server responds with an error.
 
-#### [ ] 7.4 Facilitator role management
+#### [x] 7.4 Facilitator role management
 
 - In the context menu of each user card — visible only to the facilitator — add options to change that user's role to Participant or Spectator depending on their current role.
 - On selection, send `user:change_role` with the target user's ID.
 
-#### [ ] 7.5 Room entry flow
+#### [x] 7.5 Room entry flow
 
 - When a user opens `/room/$roomId` without an active session, show a modal or drawer prompting them to enter their display name and choose a role (participant or spectator).
 - On submission, send `room:join` and close the modal once `room:state` is received.
 - Persist the user ID and display name in `sessionStorage` so that on reconnection the entry form is not shown again.
 
-#### [ ] 7.6 Task name
+#### [x] 7.6 Task name
 
 - Display an editable text field for the task name, visible only to the facilitator and only during the `waiting` and `revealed` phases.
 - The task name is submitted as part of `round:start`, not saved independently.
@@ -360,13 +360,13 @@
 
 ### Acceptance Criteria
 
-- [ ] The user list displays all room members with the correct role badge.
-- [ ] Initials avatars are generated with deterministic colors for all users.
-- [ ] Vote status icons update in real time as other users vote.
-- [ ] A user can switch their own role using the toggle.
-- [ ] The facilitator can change other users' roles from the context menu.
-- [ ] The entry modal is shown to new users accessing the room link.
-- [ ] The connection status badge reflects the real WebSocket state.
+- [x] The user list displays all room members with the correct role badge.
+- [x] Initials avatars are generated with deterministic colors for all users.
+- [x] Vote status icons update in real time as other users vote.
+- [x] A user can switch their own role using the toggle.
+- [x] The facilitator can change other users' roles from the context menu.
+- [x] The entry modal is shown to new users accessing the room link.
+- [x] The connection status badge reflects the real WebSocket state.
 
 ---
 
