@@ -376,32 +376,32 @@
 
 ### Tasks
 
-#### [ ] 8.1 Card deck component
+#### [x] 8.1 Card deck component
 
 - Build a card deck component that renders the available cards based on the current scale and special cards from the room state.
 - Each card must support three visual states: idle (selectable), selected (the user's current pick), and disabled (not interactable).
 - Cards must be disabled when: the round phase is not `voting`, the current user is a spectator, or the user has already voted. Clicking a new card while having an existing vote should retract the previous vote and submit the new one in a single interaction.
 - Include a "Retract vote" button below the deck that appears only after the user has voted. Clicking it sends the `vote:retract` event.
 
-#### [ ] 8.2 Voting progress bar
+#### [x] 8.2 Voting progress bar
 
 - Build a progress component that displays how many participants have voted out of the total participant count (spectators excluded from both numbers).
 - Include an animated progress bar.
 - This component must be visible to all users: participants, spectators, and the facilitator.
 
-#### [ ] 8.3 Facilitator control panel
+#### [x] 8.3 Facilitator control panel
 
 - Build a panel visible only to the facilitator that shows contextually relevant actions for each phase.
 - During `waiting`: a "Start voting" button that sends `round:start`.
 - During `voting`: a "Reveal cards" button (always enabled, even if not all participants have voted) and a "Cancel round" button that sends `round:reset`.
 - During `revealed`: a "New round" button that sends `round:start`.
 
-#### [ ] 8.4 Hidden cards for other users
+#### [x] 8.4 Hidden cards for other users
 
 - During the `voting` phase, display face-down cards for participants who have already voted, and an empty placeholder for those who have not yet voted.
 - Never reveal vote values before the `vote:revealed` event is received.
 
-#### [ ] 8.5 Reveal and results
+#### [x] 8.5 Reveal and results
 
 - When the `vote:revealed` event is received, animate all face-down cards flipping to face-up simultaneously using a CSS 3D flip animation.
 - Display each participant's card with their vote value.
@@ -410,21 +410,21 @@
 - Highlight the cards with the highest and lowest numeric values.
 - Highlight all cards whose value matches the mode.
 
-#### [ ] 8.6 "All voted" notification
+#### [x] 8.6 "All voted" notification
 
 - When the `vote:all_voted` event is received, display a toast or banner informing the room that all participants have voted and the facilitator can reveal the cards.
 - This notification must be visible to all users including spectators.
 
 ### Acceptance Criteria
 
-- [ ] Cards render with the correct values from the current scale.
-- [ ] A spectator sees cards in the disabled state and cannot select them.
-- [ ] A participant selects a card, the vote is submitted, and the card is marked as selected.
-- [ ] Other users see a face-down card when a participant votes.
-- [ ] `vote:all_voted` displays a notification to everyone.
-- [ ] The facilitator clicks "Reveal" and all cards flip simultaneously.
-- [ ] The statistics panel displays mean, mode, min, and max correctly.
-- [ ] "New round" clears the UI and returns to the selection state.
+- [x] Cards render with the correct values from the current scale.
+- [x] A spectator sees cards in the disabled state and cannot select them.
+- [x] A participant selects a card, the vote is submitted, and the card is marked as selected.
+- [x] Other users see a face-down card when a participant votes.
+- [x] `vote:all_voted` displays a notification to everyone.
+- [x] The facilitator clicks "Reveal" and all cards flip simultaneously.
+- [x] The statistics panel displays mean, mode, min, and max correctly.
+- [x] "New round" clears the UI and returns to the selection state.
 
 ---
 

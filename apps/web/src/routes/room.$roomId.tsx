@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { JoinModal } from "~/components/room/join-modal";
 import { TaskName } from "~/components/room/task-name";
 import { UserList } from "~/components/room/user-list";
+import { VotingArea } from "~/components/room/voting/voting-area";
 import { Badge } from "~/components/ui/badge";
 import { Spinner } from "~/components/ui/spinner";
 import { useToast } from "~/components/ui/toast";
@@ -39,6 +40,7 @@ function RoomPage() {
 
   const roomState = useRoomStore((s) => s.roomState);
   const myUserId = useRoomStore((s) => s.userId);
+  const setOnAllVoted = useRoomStore((s) => s.setOnAllVoted);
 
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [taskNameInput, setTaskNameInput] = useState("");
@@ -59,6 +61,11 @@ function RoomPage() {
       addToast("error", "Could not connect to room. It may no longer exist.");
     }
   }, [connectionStatus, navigate, addToast]);
+
+  useEffect(() => {
+    setOnAllVoted(() => addToast("info", "Everyone has voted!"));
+    return () => setOnAllVoted(null);
+  }, [setOnAllVoted, addToast]);
 
   const doJoin = useCallback(
     (name: string, role: "participant" | "spectator") => {
@@ -181,18 +188,21 @@ function RoomPage() {
           )}
         </aside>
 
-        <main className="flex-1 flex items-center justify-center p-6">
+        <main className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
           {isLoading ? (
             <div className="flex flex-col items-center gap-3 text-zinc-400">
               <Spinner size="lg" />
               <p className="text-sm">Joining room…</p>
             </div>
-          ) : (
-            <div className="text-center text-zinc-300">
-              <p className="text-4xl mb-2">🂠</p>
-              <p className="text-sm">Voting area — coming in M8</p>
-            </div>
-          )}
+          ) : roomState && myUser ? (
+            <VotingArea
+              roomState={roomState}
+              myUser={myUser}
+              isFacilitator={isFacilitator}
+              taskName={taskNameInput}
+              send={send}
+            />
+          ) : null}
         </main>
       </div>
     </div>

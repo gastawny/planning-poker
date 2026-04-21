@@ -14,11 +14,15 @@ interface RoomStore {
   roomState: RoomState | null;
   selectedVote: string | null;
   connectionStatus: ConnectionStatus;
+  stats: VoteStats | null;
+  nonVoters: string[];
+  onAllVoted: (() => void) | null;
 
   setConnectionStatus: (status: ConnectionStatus) => void;
   setUserId: (id: string) => void;
   setUserName: (name: string) => void;
   setSelectedVote: (value: string | null) => void;
+  setOnAllVoted: (cb: (() => void) | null) => void;
 
   handleRoomJoined: (state: RoomState, userId: string) => void;
   handleRoomState: (state: RoomState) => void;
@@ -43,6 +47,9 @@ const initialState = {
   roomState: null,
   selectedVote: null,
   connectionStatus: "disconnected" as ConnectionStatus,
+  stats: null as VoteStats | null,
+  nonVoters: [] as string[],
+  onAllVoted: null as (() => void) | null,
 };
 
 export const useRoomStore = create<RoomStore>((set) => ({
@@ -52,6 +59,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
   setUserId: (id) => set({ userId: id }),
   setUserName: (name) => set({ userName: name }),
   setSelectedVote: (value) => set({ selectedVote: value }),
+  setOnAllVoted: (cb) => set({ onAllVoted: cb }),
 
   handleRoomJoined: (state, userId) =>
     set((s) => {
@@ -113,6 +121,8 @@ export const useRoomStore = create<RoomStore>((set) => ({
           votes,
         },
         selectedVote: null,
+        stats,
+        nonVoters,
       };
     }),
 
@@ -130,6 +140,8 @@ export const useRoomStore = create<RoomStore>((set) => ({
           ),
         },
         selectedVote: null,
+        stats: null,
+        nonVoters: [],
       };
     }),
 
@@ -144,6 +156,8 @@ export const useRoomStore = create<RoomStore>((set) => ({
           users: s.roomState.users.map((u) => ({ ...u, hasVoted: false })),
         },
         selectedVote: null,
+        stats: null,
+        nonVoters: [],
       };
     }),
 

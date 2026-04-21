@@ -45,6 +45,8 @@ function dispatchServerEvent(event: ServerEvent): void {
       store.handleScaleUpdated(event.scale, event.specialCards, event.votesCleared);
       break;
     case "vote:all_voted":
+      store.onAllVoted?.();
+      break;
     case "error":
       break;
   }
