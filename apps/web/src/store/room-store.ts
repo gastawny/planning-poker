@@ -17,12 +17,14 @@ interface RoomStore {
   stats: VoteStats | null;
   nonVoters: string[];
   onAllVoted: (() => void) | null;
+  onScaleUpdated: ((votesCleared: boolean) => void) | null;
 
   setConnectionStatus: (status: ConnectionStatus) => void;
   setUserId: (id: string) => void;
   setUserName: (name: string) => void;
   setSelectedVote: (value: string | null) => void;
   setOnAllVoted: (cb: (() => void) | null) => void;
+  setOnScaleUpdated: (cb: ((votesCleared: boolean) => void) | null) => void;
 
   handleRoomJoined: (state: RoomState, userId: string) => void;
   handleRoomState: (state: RoomState) => void;
@@ -50,9 +52,10 @@ const initialState = {
   stats: null as VoteStats | null,
   nonVoters: [] as string[],
   onAllVoted: null as (() => void) | null,
+  onScaleUpdated: null as ((votesCleared: boolean) => void) | null,
 };
 
-export const useRoomStore = create<RoomStore>((set) => ({
+export const useRoomStore = create<RoomStore>((set, get) => ({
   ...initialState,
 
   setConnectionStatus: (status) => set({ connectionStatus: status }),
@@ -60,6 +63,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
   setUserName: (name) => set({ userName: name }),
   setSelectedVote: (value) => set({ selectedVote: value }),
   setOnAllVoted: (cb) => set({ onAllVoted: cb }),
+  setOnScaleUpdated: (cb) => set({ onScaleUpdated: cb }),
 
   handleRoomJoined: (state, userId) =>
     set((s) => {
@@ -161,7 +165,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
       };
     }),
 
-  handleScaleUpdated: (scale, specialCards, votesCleared) =>
+  handleScaleUpdated: (scale, specialCards, votesCleared) => {
     set((s) => {
       if (!s.roomState) return {};
       return {
@@ -178,7 +182,9 @@ export const useRoomStore = create<RoomStore>((set) => ({
         },
         ...(votesCleared ? { selectedVote: null } : {}),
       };
-    }),
+    });
+    get().onScaleUpdated?.(votesCleared);
+  },
 
   reset: () => set(initialState),
 }));

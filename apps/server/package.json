@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.4.1",
     "@planning-poker/types": "workspace:*",
     "elysia": "^1.2.25",
     "ioredis": "^5.4.2"

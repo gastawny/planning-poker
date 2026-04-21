@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { JoinModal } from "~/components/room/join-modal";
+import { ScaleConfigModal } from "~/components/room/scale-config-modal";
 import { TaskName } from "~/components/room/task-name";
 import { UserList } from "~/components/room/user-list";
 import { VotingArea } from "~/components/room/voting/voting-area";
@@ -41,8 +42,10 @@ function RoomPage() {
   const roomState = useRoomStore((s) => s.roomState);
   const myUserId = useRoomStore((s) => s.userId);
   const setOnAllVoted = useRoomStore((s) => s.setOnAllVoted);
+  const setOnScaleUpdated = useRoomStore((s) => s.setOnScaleUpdated);
 
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showScaleModal, setShowScaleModal] = useState(false);
   const [taskNameInput, setTaskNameInput] = useState("");
   const joinSentRef = useRef(false);
 
@@ -66,6 +69,13 @@ function RoomPage() {
     setOnAllVoted(() => addToast("info", "Everyone has voted!"));
     return () => setOnAllVoted(null);
   }, [setOnAllVoted, addToast]);
+
+  useEffect(() => {
+    setOnScaleUpdated((votesCleared) => {
+      if (votesCleared) addToast("info", "Scale changed — votes have been cleared.");
+    });
+    return () => setOnScaleUpdated(null);
+  }, [setOnScaleUpdated, addToast]);
 
   const doJoin = useCallback(
     (name: string, role: "participant" | "spectator") => {
@@ -134,6 +144,15 @@ function RoomPage() {
   return (
     <div className="min-h-screen bg-zinc-50 flex flex-col">
       {showJoinModal && <JoinModal onJoin={handleModalJoin} />}
+      {showScaleModal && roomState && (
+        <ScaleConfigModal
+          phase={roomState.phase}
+          currentScale={roomState.scale}
+          currentSpecialCards={roomState.specialCards}
+          send={send}
+          onClose={() => setShowScaleModal(false)}
+        />
+      )}
 
       <header className="bg-white border-b border-zinc-200 px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
@@ -157,6 +176,30 @@ function RoomPage() {
         </div>
 
         <div className="flex items-center gap-3 flex-shrink-0">
+          {isFacilitator && roomState && (
+            <button
+              type="button"
+              onClick={() => setShowScaleModal(true)}
+              aria-label="Configure scale"
+              className="text-zinc-400 hover:text-zinc-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </button>
+          )}
           <button
             type="button"
             onClick={handleCopyInvite}

@@ -434,51 +434,51 @@
 
 ### Tasks
 
-#### [ ] 9.1 Configuration entry point
+#### [x] 9.1 Configuration entry point
 
 - Add a settings button or icon in the room header, visible only to the facilitator.
 - Clicking it opens a modal or side drawer with the scale configuration UI.
 
-#### [ ] 9.2 Preset selector
+#### [x] 9.2 Preset selector
 
 - Display three preset buttons: "Short", "Standard", and "Long".
 - Clicking a preset automatically selects the corresponding set of values in the customization UI below.
 - Indicate visually which preset is currently active, or show a "Custom" label if the current selection does not match any preset.
 
-#### [ ] 9.3 Custom value selector
+#### [x] 9.3 Custom value selector
 
 - Display all values from the long Fibonacci sequence as individual toggle chips or checkboxes.
 - Each value can be toggled on or off individually.
 - Enforce the minimum of 2 selected values by disabling the toggle-off action when only 2 remain selected.
 - Show a live preview of the cards that will be displayed based on the current selection. The preview must update immediately on every toggle without waiting for the user to apply.
 
-#### [ ] 9.4 Special cards section
+#### [x] 9.4 Special cards section
 
 - Show a separate section for special cards with individual toggles for `?`, `∞`, and `☕`.
 - In v1, `?` and `∞` are always active and their toggles are either hidden or permanently disabled.
 - `☕` is optional and off by default.
 
-#### [ ] 9.5 Apply and broadcast
+#### [x] 9.5 Apply and broadcast
 
 - Include an "Apply" button that sends `scale:update` with the current selection.
 - If the round is in the `voting` phase, show a confirmation dialog before sending: inform the user that changing the scale will clear all votes in the current round and ask for confirmation.
 - Include a "Restore default" button that sends `scale:reset`, with the same confirmation flow if the phase is `voting`.
 - Close the modal automatically after a successful apply.
 
-#### [ ] 9.6 Real-time update for non-facilitators
+#### [x] 9.6 Real-time update for non-facilitators
 
 - When the `scale:updated` event is received by any client, update the card deck immediately without a page reload.
 - If the event includes `votesCleared: true`, clear the user's locally selected card and display an informational toast.
 
 ### Acceptance Criteria
 
-- [ ] The configuration button is visible only to the facilitator.
-- [ ] Clicking a preset correctly populates the value checkboxes.
-- [ ] The card preview updates in real time as values are toggled.
-- [ ] Applying sends `scale:update` and all users' card decks update immediately.
-- [ ] A confirmation dialog is shown when changing the scale during an active vote.
-- [ ] `scale:reset` restores the default preset for all clients.
-- [ ] Non-facilitators see their deck update upon receiving `scale:updated`.
+- [x] The configuration button is visible only to the facilitator.
+- [x] Clicking a preset correctly populates the value checkboxes.
+- [x] The card preview updates in real time as values are toggled.
+- [x] Applying sends `scale:update` and all users' card decks update immediately.
+- [x] A confirmation dialog is shown when changing the scale during an active vote.
+- [x] `scale:reset` restores the default preset for all clients.
+- [x] Non-facilitators see their deck update upon receiving `scale:updated`.
 
 ---
 

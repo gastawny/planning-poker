@@ -13,6 +13,7 @@ import { handleVoteSubmit } from "@/handlers/vote-submit";
 import { generateRoomId, generateUserId } from "@/lib/ids";
 import { DEFAULT_SCALE, DEFAULT_SPECIAL_CARDS } from "@/lib/scales";
 import { getRoom, saveRoom } from "@/services/redis";
+import { cors } from "@elysiajs/cors";
 import type { ClientEvent, RoomState } from "@planning-poker/types";
 import { Elysia } from "elysia";
 
@@ -28,6 +29,7 @@ type ConnectionState = {
 const pendingConnections = new Map<string, ConnectionState>();
 
 const app = new Elysia()
+  .use(cors({ origin: env.publicAppUrl, credentials: true }))
   .get("/health", () => ({ ok: true }))
   .post("/rooms", async ({ body, set }) => {
     const { name } = body as { name?: string };
