@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { useToast } from "~/components/ui/toast";
+import { Label } from "~/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { env } from "~/env";
 
 export const Route = createFileRoute("/")({
@@ -27,7 +29,6 @@ function extractRoomCode(input: string): string {
 
 function CreateRoomForm() {
   const navigate = useNavigate();
-  const { addToast } = useToast();
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
@@ -49,7 +50,7 @@ function CreateRoomForm() {
       });
       if (!res.ok) {
         const body = (await res.json()) as { message?: string };
-        addToast("error", body.message ?? "Failed to create room");
+        toast.error(body.message ?? "Failed to create room");
         return;
       }
       const { roomId, hostId } = (await res.json()) as { roomId: string; hostId: string };
@@ -58,7 +59,7 @@ function CreateRoomForm() {
       sessionStorage.setItem("hostId", hostId);
       await navigate({ to: "/room/$roomId", params: { roomId } });
     } catch {
-      addToast("error", "Server unreachable. Please try again.");
+      toast.error("Server unreachable. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -90,7 +91,6 @@ function CreateRoomForm() {
 
 function JoinRoomForm() {
   const navigate = useNavigate();
-  const { addToast } = useToast();
   const [roomInput, setRoomInput] = useState("");
   const [name, setName] = useState("");
   const [role, setRole] = useState<"participant" | "spectator">("participant");
@@ -128,7 +128,7 @@ function JoinRoomForm() {
         return;
       }
       if (!res.ok) {
-        addToast("error", "Failed to look up room");
+        toast.error("Failed to look up room");
         return;
       }
       sessionStorage.setItem("userName", name.trim());
@@ -136,7 +136,7 @@ function JoinRoomForm() {
       sessionStorage.removeItem("hostId");
       await navigate({ to: "/room/$roomId", params: { roomId: roomCode } });
     } catch {
-      addToast("error", "Server unreachable. Please try again.");
+      toast.error("Server unreachable. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -167,24 +167,23 @@ function JoinRoomForm() {
         maxLength={30}
         autoComplete="nickname"
       />
-      <fieldset className="flex flex-col gap-2">
-        <legend className="text-sm font-medium text-zinc-700">Join as</legend>
-        <div className="flex gap-4">
+      <div className="flex flex-col gap-2">
+        <Label>Join as</Label>
+        <RadioGroup
+          value={role}
+          onValueChange={(v) => setRole(v as "participant" | "spectator")}
+          className="flex gap-4"
+        >
           {(["participant", "spectator"] as const).map((r) => (
-            <label key={r} className="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer">
-              <input
-                type="radio"
-                name="role"
-                value={r}
-                checked={role === r}
-                onChange={() => setRole(r)}
-                className="accent-indigo-600"
-              />
-              {r.charAt(0).toUpperCase() + r.slice(1)}
-            </label>
+            <div key={r} className="flex items-center gap-2">
+              <RadioGroupItem value={r} id={`role-${r}`} />
+              <Label htmlFor={`role-${r}`} className="cursor-pointer">
+                {r.charAt(0).toUpperCase() + r.slice(1)}
+              </Label>
+            </div>
           ))}
-        </div>
-      </fieldset>
+        </RadioGroup>
+      </div>
       <Button type="submit" variant="secondary" loading={loading} className="w-full">
         Join room
       </Button>

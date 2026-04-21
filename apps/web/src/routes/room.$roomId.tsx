@@ -1,13 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { SettingsIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { JoinModal } from "~/components/room/join-modal";
 import { ScaleConfigModal } from "~/components/room/scale-config-modal";
 import { TaskName } from "~/components/room/task-name";
 import { UserList } from "~/components/room/user-list";
 import { VotingArea } from "~/components/room/voting/voting-area";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Spinner } from "~/components/ui/spinner";
-import { useToast } from "~/components/ui/toast";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { env } from "~/env";
 import { useRoomSocket } from "~/hooks/use-room-socket";
 import type { ConnectionStatus } from "~/store/room-store";
@@ -36,7 +39,6 @@ const statusVariant: Record<ConnectionStatus, "default" | "success" | "warning" 
 function RoomPage() {
   const { roomId } = Route.useParams();
   const navigate = useNavigate();
-  const { addToast } = useToast();
   const { send, connectionStatus } = useRoomSocket(roomId);
 
   const roomState = useRoomStore((s) => s.roomState);
@@ -61,21 +63,21 @@ function RoomPage() {
   useEffect(() => {
     if (connectionStatus === "error") {
       navigate({ to: "/" });
-      addToast("error", "Could not connect to room. It may no longer exist.");
+      toast.error("Could not connect to room. It may no longer exist.");
     }
-  }, [connectionStatus, navigate, addToast]);
+  }, [connectionStatus, navigate]);
 
   useEffect(() => {
-    setOnAllVoted(() => addToast("info", "Everyone has voted!"));
+    setOnAllVoted(() => toast.info("Everyone has voted!"));
     return () => setOnAllVoted(null);
-  }, [setOnAllVoted, addToast]);
+  }, [setOnAllVoted]);
 
   useEffect(() => {
     setOnScaleUpdated((votesCleared) => {
-      if (votesCleared) addToast("info", "Scale changed — votes have been cleared.");
+      if (votesCleared) toast.info("Scale changed — votes have been cleared.");
     });
     return () => setOnScaleUpdated(null);
-  }, [setOnScaleUpdated, addToast]);
+  }, [setOnScaleUpdated]);
 
   const doJoin = useCallback(
     (name: string, role: "participant" | "spectator") => {
@@ -119,7 +121,7 @@ function RoomPage() {
 
   function handleCopyInvite() {
     const url = `${env.appUrl}/room/${roomId}`;
-    navigator.clipboard.writeText(url).then(() => addToast("success", "Invite link copied!"));
+    navigator.clipboard.writeText(url).then(() => toast.success("Invite link copied!"));
   }
 
   function handleChangeRole(targetUserId: string, newRole: "participant" | "spectator") {
@@ -142,7 +144,7 @@ function RoomPage() {
     (connectionStatus === "connected" && !roomState);
 
   return (
-    <div className="min-h-screen bg-zinc-50 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {showJoinModal && <JoinModal onJoin={handleModalJoin} />}
       {showScaleModal && roomState && (
         <ScaleConfigModal
@@ -154,10 +156,10 @@ function RoomPage() {
         />
       )}
 
-      <header className="bg-white border-b border-zinc-200 px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
+      <header className="bg-card border-b border-border px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
-          <h1 className="text-base font-semibold text-zinc-900 flex-shrink-0">
-            Room <span className="font-mono text-indigo-600">{roomId}</span>
+          <h1 className="text-base font-semibold text-foreground flex-shrink-0">
+            Room <span className="font-mono text-primary">{roomId}</span>
           </h1>
           {roomState && (
             <>
@@ -177,45 +179,39 @@ function RoomPage() {
 
         <div className="flex items-center gap-3 flex-shrink-0">
           {isFacilitator && roomState && (
-            <button
-              type="button"
-              onClick={() => setShowScaleModal(true)}
-              aria-label="Configure scale"
-              className="text-zinc-400 hover:text-zinc-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => setShowScaleModal(true)}
+                    aria-label="Configure scale"
+                  />
+                }
               >
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-            </button>
+                <SettingsIcon className="size-4" />
+              </TooltipTrigger>
+              <TooltipContent>Configure scale</TooltipContent>
+            </Tooltip>
           )}
-          <button
-            type="button"
-            onClick={handleCopyInvite}
-            className="text-xs text-indigo-600 hover:text-indigo-800 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
-          >
-            Copy invite link
-          </button>
+          <Tooltip>
+            <TooltipTrigger
+              render={<Button variant="ghost" size="sm" onClick={handleCopyInvite} />}
+            >
+              Copy invite link
+            </TooltipTrigger>
+            <TooltipContent>Copy room link to clipboard</TooltipContent>
+          </Tooltip>
           {(connectionStatus === "connecting" || connectionStatus === "reconnecting") && (
-            <Spinner size="sm" className="text-zinc-500" />
+            <Spinner className="size-4 text-muted-foreground" />
           )}
           <Badge variant={statusVariant[connectionStatus]}>{statusLabel[connectionStatus]}</Badge>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-72 flex-shrink-0 bg-white border-r border-zinc-200 overflow-y-auto p-4">
+        <aside className="w-72 flex-shrink-0 bg-card border-r border-border overflow-y-auto p-4">
           {roomState && myUserId ? (
             <UserList
               users={roomState.users}
@@ -227,14 +223,14 @@ function RoomPage() {
               onKick={handleKick}
             />
           ) : (
-            <p className="text-sm text-zinc-400 text-center mt-8">Loading members…</p>
+            <p className="text-sm text-muted-foreground text-center mt-8">Loading members…</p>
           )}
         </aside>
 
         <main className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
           {isLoading ? (
-            <div className="flex flex-col items-center gap-3 text-zinc-400">
-              <Spinner size="lg" />
+            <div className="flex flex-col items-center gap-3 text-muted-foreground">
+              <Spinner className="size-8" />
               <p className="text-sm">Joining room…</p>
             </div>
           ) : roomState && myUser ? (

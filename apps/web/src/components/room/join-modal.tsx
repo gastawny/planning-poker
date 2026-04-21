@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 
 interface JoinModalProps {
   onJoin: (name: string, role: "participant" | "spectator") => void;
@@ -29,21 +38,14 @@ export function JoinModal({ onJoin }: JoinModalProps) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-      data-testid="join-modal"
-    >
-      <dialog
-        open
-        aria-labelledby="join-modal-title"
-        className="bg-white rounded-xl border border-zinc-200 shadow-lg w-full max-w-sm mx-4 p-6 m-0"
-      >
-        <h2 id="join-modal-title" className="text-lg font-semibold text-zinc-900 mb-1">
-          Join this room
-        </h2>
-        <p className="text-sm text-zinc-500 mb-5">Enter your name to join the session.</p>
+    <Dialog open>
+      <DialogContent className="max-w-sm" data-testid="join-modal" showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>Join this room</DialogTitle>
+          <DialogDescription>Enter your name to join the session.</DialogDescription>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-2" noValidate>
           <Input
             id="modal-name"
             data-testid="join-name-input"
@@ -57,34 +59,29 @@ export function JoinModal({ onJoin }: JoinModalProps) {
             autoFocus
           />
 
-          <fieldset className="flex flex-col gap-2">
-            <legend className="text-sm font-medium text-zinc-700">Join as</legend>
-            <div className="flex gap-4">
+          <div className="flex flex-col gap-2">
+            <Label>Join as</Label>
+            <RadioGroup
+              value={role}
+              onValueChange={(v) => setRole(v as "participant" | "spectator")}
+              className="flex gap-4"
+            >
               {(["participant", "spectator"] as const).map((r) => (
-                <label
-                  key={r}
-                  className="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"
-                >
-                  <input
-                    type="radio"
-                    name="modal-role"
-                    value={r}
-                    checked={role === r}
-                    onChange={() => setRole(r)}
-                    data-testid={`join-role-${r}`}
-                    className="accent-indigo-600"
-                  />
-                  {r.charAt(0).toUpperCase() + r.slice(1)}
-                </label>
+                <div key={r} className="flex items-center gap-2">
+                  <RadioGroupItem value={r} id={`modal-role-${r}`} data-testid={`join-role-${r}`} />
+                  <Label htmlFor={`modal-role-${r}`} className="cursor-pointer">
+                    {r.charAt(0).toUpperCase() + r.slice(1)}
+                  </Label>
+                </div>
               ))}
-            </div>
-          </fieldset>
+            </RadioGroup>
+          </div>
 
           <Button type="submit" data-testid="join-submit" className="w-full">
             Join room
           </Button>
         </form>
-      </dialog>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

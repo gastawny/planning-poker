@@ -1,4 +1,5 @@
 import type { RoomUser } from "@planning-poker/types";
+import { Progress } from "~/components/ui/progress";
 
 interface VotingProgressProps {
   users: RoomUser[];
@@ -12,16 +13,11 @@ export function VotingProgress({ users }: VotingProgressProps) {
 
   return (
     <div className="w-full flex flex-col gap-2">
-      <p className="text-sm text-zinc-600 text-center">
-        <span className="font-semibold text-zinc-900">{voted}</span> out of{" "}
-        <span className="font-semibold text-zinc-900">{total}</span> participants have voted
+      <p className="text-sm text-muted-foreground text-center">
+        <span className="font-semibold text-foreground">{voted}</span> out of{" "}
+        <span className="font-semibold text-foreground">{total}</span> participants have voted
       </p>
-      <div className="w-full bg-zinc-200 rounded-full h-2 overflow-hidden">
-        <div
-          className="bg-indigo-500 h-2 rounded-full transition-all duration-500"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
+      <Progress value={pct} className="h-2" />
     </div>
   );
 }

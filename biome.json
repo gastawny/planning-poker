@@ -20,5 +20,17 @@
   },
   "files": {
     "ignore": ["node_modules", "dist", ".turbo", "build", ".claude", "**/routeTree.gen.ts"]
-  }
+  },
+  "overrides": [
+    {
+      "include": ["apps/web/src/components/ui/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noLabelWithoutControl": "off"
+          }
+        }
+      }
+    }
+  ]
 }

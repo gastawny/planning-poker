@@ -1,6 +1,11 @@
 import type { ClientEvent, RoundPhase } from "@planning-poker/types";
+import { TriangleAlertIcon } from "lucide-react";
 import { useState } from "react";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
+import { Checkbox } from "~/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/ui/dialog";
+import { Label } from "~/components/ui/label";
 
 const LONG_SCALE = ["1", "2", "3", "5", "8", "13", "21", "34", "55", "89"];
 
@@ -89,53 +94,40 @@ export function ScaleConfigModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <dialog
-        open
-        aria-labelledby="scale-modal-title"
-        className="bg-white rounded-xl border border-zinc-200 shadow-lg w-full max-w-lg mx-4 p-6 m-0 max-h-[90vh] overflow-y-auto"
-      >
-        <div className="flex items-center justify-between mb-4">
-          <h2 id="scale-modal-title" className="text-lg font-semibold text-zinc-900">
-            Configure scale
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="text-zinc-400 hover:text-zinc-600 text-xl leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
-          >
-            ×
-          </button>
-        </div>
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Configure scale</DialogTitle>
+        </DialogHeader>
 
         <section className="mb-5">
-          <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2">Preset</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+            Preset
+          </p>
           <div className="flex gap-2 flex-wrap">
             {Object.entries(PRESETS).map(([label, values]) => (
-              <button
+              <Button
                 key={label}
                 type="button"
+                variant={presetLabel === label ? "default" : "outline"}
+                size="sm"
                 onClick={() => selectPreset(values)}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
-                  presetLabel === label
-                    ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                    : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50"
-                }`}
               >
                 {label}
-              </button>
+              </Button>
             ))}
             {presetLabel === "Custom" && (
-              <span className="px-3 py-1.5 rounded-md text-sm font-medium border border-zinc-300 bg-zinc-100 text-zinc-500">
+              <Button type="button" variant="outline" size="sm" disabled>
                 Custom
-              </span>
+              </Button>
             )}
           </div>
         </section>
 
         <section className="mb-5">
-          <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2">Values</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+            Values
+          </p>
           <div className="flex flex-wrap gap-2">
             {LONG_SCALE.map((value) => {
               const isSelected = selectedValues.has(value);
@@ -147,10 +139,10 @@ export function ScaleConfigModal({
                   onClick={() => toggleValue(value)}
                   disabled={isDisabledToggleOff}
                   title={isDisabledToggleOff ? "Minimum 2 values required" : undefined}
-                  className={`w-12 h-10 rounded-md border-2 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed ${
+                  className={`w-12 h-10 rounded-md border-2 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40 disabled:cursor-not-allowed ${
                     isSelected
-                      ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                      : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border bg-background text-foreground hover:border-border/80"
                   }`}
                 >
                   {value}
@@ -161,42 +153,50 @@ export function ScaleConfigModal({
         </section>
 
         <section className="mb-5">
-          <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
             Special cards
           </p>
           <div className="flex gap-4 flex-wrap">
             {(["?", "∞"] as const).map((card) => (
-              <label
+              <div
                 key={card}
-                className="flex items-center gap-2 text-sm text-zinc-500 cursor-not-allowed select-none"
+                className="flex items-center gap-2 opacity-50 cursor-not-allowed select-none"
               >
-                <input type="checkbox" checked disabled className="accent-indigo-600" readOnly />
-                <span className="font-mono font-semibold">{card}</span>
-                <span className="text-xs text-zinc-400">(always on)</span>
-              </label>
+                <Checkbox checked disabled id={`special-${card}`} />
+                <Label
+                  htmlFor={`special-${card}`}
+                  className="font-mono font-semibold cursor-not-allowed"
+                >
+                  {card}
+                  <span className="text-xs text-muted-foreground ml-1">(always on)</span>
+                </Label>
+              </div>
             ))}
-            <label className="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer select-none">
-              <input
-                type="checkbox"
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="special-coffee"
                 checked={coffeeEnabled}
-                onChange={(e) => {
-                  setCoffeeEnabled(e.target.checked);
+                onCheckedChange={(checked) => {
+                  setCoffeeEnabled(!!checked);
                   setConfirmAction(null);
                 }}
-                className="accent-indigo-600"
               />
-              <span className="font-mono font-semibold">☕</span>
-            </label>
+              <Label htmlFor="special-coffee" className="font-mono font-semibold cursor-pointer">
+                ☕
+              </Label>
+            </div>
           </div>
         </section>
 
         <section className="mb-6">
-          <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2">Preview</p>
-          <div className="flex flex-wrap gap-2 p-3 bg-zinc-50 rounded-lg border border-zinc-200 min-h-[4rem]">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+            Preview
+          </p>
+          <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-lg border border-border min-h-[4rem]">
             {previewCards.map((card) => (
               <div
                 key={card}
-                className="w-10 h-14 rounded-md border-2 border-zinc-300 bg-white flex items-center justify-center text-sm font-bold text-zinc-700 shadow-sm"
+                className="w-10 h-14 rounded-md border-2 border-border bg-background flex items-center justify-center text-sm font-bold text-foreground shadow-sm"
               >
                 {card}
               </div>
@@ -205,23 +205,24 @@ export function ScaleConfigModal({
         </section>
 
         {confirmAction && (
-          <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-800">
-            <p className="font-medium mb-2">
-              This will clear all votes in the current round. Continue?
-            </p>
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={confirmAction === "apply" ? handleApply : handleReset}
-              >
-                Confirm
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => setConfirmAction(null)}>
-                Cancel
-              </Button>
-            </div>
-          </div>
+          <Alert variant="destructive" className="mb-4">
+            <TriangleAlertIcon />
+            <AlertTitle>This will clear all votes in the current round. Continue?</AlertTitle>
+            <AlertDescription>
+              <div className="flex gap-2 mt-2">
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={confirmAction === "apply" ? handleApply : handleReset}
+                >
+                  Confirm
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setConfirmAction(null)}>
+                  Cancel
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
         )}
 
         <div className="flex items-center justify-between gap-3">
@@ -237,7 +238,7 @@ export function ScaleConfigModal({
             </Button>
           </div>
         </div>
-      </dialog>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
