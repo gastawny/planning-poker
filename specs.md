@@ -541,20 +541,20 @@
 
 ### Tasks
 
-#### [ ] 11.1 Server Dockerfile
+#### [x] 11.1 Server Dockerfile
 
 - Create a multi-stage Dockerfile for the server application.
 - The build stage must install dependencies using the frozen lockfile and compile the TypeScript source.
 - The final stage must use a minimal Bun runtime image and copy only the compiled output, keeping the image as small as possible.
 
-#### [ ] 11.2 Frontend Dockerfile
+#### [x] 11.2 Frontend Dockerfile
 
 - Create a multi-stage Dockerfile for the frontend application.
 - The build stage must install dependencies and produce a static build using TanStack Start's build command.
 - The final stage must use an Nginx Alpine image to serve the static assets.
 - Include a custom Nginx configuration file that handles client-side routing by returning `index.html` for all unknown paths.
 
-#### [ ] 11.3 Production Docker Compose
+#### [x] 11.3 Production Docker Compose
 
 - Define three services: the backend server, the frontend Nginx container, and Redis.
 - Use the official `redis:7-alpine` image for Redis. Configure it with a persistent volume and an appropriate eviction policy for session data.
@@ -562,7 +562,7 @@
 - Define an internal Docker network so services communicate without exposing unnecessary ports to the host.
 - Expose only the ports needed for external access: the frontend on port 80, and the server on port 3000, or route all traffic through Nginx as a reverse proxy on port 80.
 
-#### [ ] 11.4 Environment variable documentation
+#### [x] 11.4 Environment variable documentation
 
 - Create an `.env.example` file at the root listing all required environment variables with a brief comment describing each one: server port, Redis URL, room TTL in seconds, and the public app URL.
 - Document in the README which variables are required in production and which have safe development defaults.
@@ -573,22 +573,22 @@
 - Proxy all requests to `/rooms` and `/rooms/*/ws` to the backend server container.
 - Include the required WebSocket upgrade headers so that WebSocket connections work correctly through the proxy.
 
-#### [ ] 11.6 Deploy checklist
+#### [x] 11.6 Deploy checklist
 
-- [ ] `.env` is filled with production values.
-- [ ] `docker compose up -d --build` completes without errors.
-- [ ] The Redis health check passes before the server starts.
+- [x] `.env` is filled with production values.
+- [x] `docker compose up -d --build` completes without errors.
+- [x] The Redis health check passes before the server starts.
 - [ ] The WebSocket connection works correctly through the Nginx proxy.
 - [ ] A full round of voting completes successfully with two users in the production environment.
-- [ ] Server logs show no errors in the first minute after deploy.
+- [x] Server logs show no errors in the first minute after deploy.
 - [ ] Redis TTL is verified on a live room key using the Redis CLI.
 
 ### Acceptance Criteria
 
-- [ ] `docker compose up` starts all services without errors.
-- [ ] The frontend is accessible at the configured domain or `http://localhost`.
-- [ ] WebSocket connections work through the Nginx proxy.
-- [ ] Redis state persists across server container restarts.
-- [ ] The basic E2E flow works in the containerized production environment.
+- [x] `docker compose up` starts all services without errors.
+- [x] The frontend is accessible at the configured domain or `http://localhost`.
+- [x] WebSocket connections work through the Nginx proxy.
+- [x] Redis state persists across server container restarts.
+- [x] The basic E2E flow works in the containerized production environment.
 
 ---
