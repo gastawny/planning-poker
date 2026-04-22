@@ -68,8 +68,8 @@ function CreateRoomForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 mb-1">Create a room</h2>
-        <p className="text-sm text-zinc-500">Start a new session as the facilitator.</p>
+        <h2 className="text-lg font-semibold text-foreground mb-1">Create a room</h2>
+        <p className="text-sm text-muted-foreground">Start a new session as the facilitator.</p>
       </div>
       <Input
         id="create-name"
@@ -145,8 +145,8 @@ function JoinRoomForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 mb-1">Join a room</h2>
-        <p className="text-sm text-zinc-500">Enter a room code or paste an invite link.</p>
+        <h2 className="text-lg font-semibold text-foreground mb-1">Join a room</h2>
+        <p className="text-sm text-muted-foreground">Enter a room code or paste an invite link.</p>
       </div>
       <Input
         id="join-room"
@@ -172,15 +172,21 @@ function JoinRoomForm() {
         <RadioGroup
           value={role}
           onValueChange={(v) => setRole(v as "participant" | "spectator")}
-          className="flex gap-4"
+          className="flex gap-2"
         >
           {(["participant", "spectator"] as const).map((r) => (
-            <div key={r} className="flex items-center gap-2">
+            <label
+              key={r}
+              htmlFor={`role-${r}`}
+              className={`flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-lg border cursor-pointer transition-all ${
+                role === r
+                  ? "border-[oklch(0.78_0.14_85_/_60%)] bg-[oklch(0.78_0.14_85_/_8%)]"
+                  : "border-border hover:border-border/60 bg-transparent"
+              }`}
+            >
               <RadioGroupItem value={r} id={`role-${r}`} />
-              <Label htmlFor={`role-${r}`} className="cursor-pointer">
-                {r.charAt(0).toUpperCase() + r.slice(1)}
-              </Label>
-            </div>
+              <span className="text-sm font-medium capitalize">{r}</span>
+            </label>
           ))}
         </RadioGroup>
       </div>
@@ -193,17 +199,43 @@ function JoinRoomForm() {
 
 function Home() {
   return (
-    <main className="min-h-screen bg-zinc-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-zinc-900 tracking-tight">Planning Poker</h1>
-          <p className="mt-2 text-zinc-500">Estimate collaboratively with your team.</p>
+    <main className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background decoration: large suit symbols */}
+      <div className="absolute inset-0 pointer-events-none select-none" aria-hidden="true">
+        <span className="absolute top-8 left-8 text-[12rem] opacity-[0.03] text-foreground font-serif leading-none">♠</span>
+        <span className="absolute top-8 right-8 text-[12rem] opacity-[0.03] text-red-400 font-serif leading-none">♥</span>
+        <span className="absolute bottom-8 left-8 text-[12rem] opacity-[0.03] text-red-400 font-serif leading-none">♦</span>
+        <span className="absolute bottom-8 right-8 text-[12rem] opacity-[0.03] text-foreground font-serif leading-none">♣</span>
+        {/* Radial glow in center */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.78_0.14_85_/_0.04)_0%,transparent_70%)]" />
+      </div>
+
+      <div className="w-full max-w-3xl relative z-10">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 mb-3">
+            <span className="text-2xl opacity-60">♠</span>
+            <span className="text-2xl opacity-40">♥</span>
+          </div>
+          <h1
+            className="text-5xl font-bold text-foreground tracking-tight"
+            style={{ fontFamily: "'Cinzel', serif" }}
+          >
+            Planning Poker
+          </h1>
+          <div className="mt-2 mx-auto w-24 h-px bg-gradient-to-r from-transparent via-[oklch(0.78_0.14_85)] to-transparent" />
+          <p className="mt-3 text-muted-foreground text-sm tracking-wide uppercase">
+            Estimate collaboratively with your team
+          </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-xl border border-zinc-200 p-6 shadow-sm">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-card rounded-xl border border-border p-7 shadow-xl shadow-black/40 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[oklch(0.78_0.14_85_/_0.12)] to-transparent rounded-bl-xl" />
             <CreateRoomForm />
           </div>
-          <div className="bg-white rounded-xl border border-zinc-200 p-6 shadow-sm">
+          <div className="bg-card rounded-xl border border-border p-7 shadow-xl shadow-black/40 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[oklch(0.78_0.14_85_/_0.06)] to-transparent rounded-bl-xl" />
             <JoinRoomForm />
           </div>
         </div>

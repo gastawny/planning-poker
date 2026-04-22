@@ -141,8 +141,8 @@ export function ScaleConfigModal({
                   title={isDisabledToggleOff ? "Minimum 2 values required" : undefined}
                   className={`w-12 h-10 rounded-md border-2 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40 disabled:cursor-not-allowed ${
                     isSelected
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border bg-background text-foreground hover:border-border/80"
+                      ? "border-[oklch(0.78_0.14_85)] bg-[oklch(0.78_0.14_85_/_15%)] text-[oklch(0.78_0.14_85)]"
+                      : "border-border bg-background text-foreground hover:border-[oklch(0.78_0.14_85_/_40%)]"
                   }`}
                 >
                   {value}
@@ -196,7 +196,7 @@ export function ScaleConfigModal({
             {previewCards.map((card) => (
               <div
                 key={card}
-                className="w-10 h-14 rounded-md border-2 border-border bg-background flex items-center justify-center text-sm font-bold text-foreground shadow-sm"
+                className="w-10 h-14 rounded-md border-2 border-border bg-[oklch(0.97_0.01_255)] flex items-center justify-center text-sm font-bold text-[oklch(0.15_0.02_255)] shadow-sm"
               >
                 {card}
               </div>

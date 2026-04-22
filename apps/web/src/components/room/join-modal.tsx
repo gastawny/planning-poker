@@ -64,15 +64,21 @@ export function JoinModal({ onJoin }: JoinModalProps) {
             <RadioGroup
               value={role}
               onValueChange={(v) => setRole(v as "participant" | "spectator")}
-              className="flex gap-4"
+              className="flex gap-2"
             >
               {(["participant", "spectator"] as const).map((r) => (
-                <div key={r} className="flex items-center gap-2">
+                <label
+                  key={r}
+                  htmlFor={`modal-role-${r}`}
+                  className={`flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-lg border cursor-pointer transition-all ${
+                    role === r
+                      ? "border-[oklch(0.78_0.14_85_/_60%)] bg-[oklch(0.78_0.14_85_/_8%)]"
+                      : "border-border hover:border-border/60 bg-transparent"
+                  }`}
+                >
                   <RadioGroupItem value={r} id={`modal-role-${r}`} data-testid={`join-role-${r}`} />
-                  <Label htmlFor={`modal-role-${r}`} className="cursor-pointer">
-                    {r.charAt(0).toUpperCase() + r.slice(1)}
-                  </Label>
-                </div>
+                  <span className="text-sm font-medium capitalize">{r}</span>
+                </label>
               ))}
             </RadioGroup>
           </div>

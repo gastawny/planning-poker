@@ -48,13 +48,23 @@ export function CardDeck({
                 type="button"
                 data-testid={`card-${value}`}
                 onClick={() => handleCardClick(value)}
-                className={`w-14 h-20 rounded-lg border-2 flex items-center justify-center text-lg font-bold transition-all duration-150 select-none ${
+                className={`relative w-14 h-20 rounded-lg border-2 flex items-center justify-center text-lg font-bold transition-all duration-200 select-none card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isSelected
-                    ? "border-indigo-600 bg-indigo-50 shadow-md ring-2 ring-indigo-500 text-indigo-700"
-                    : "border-zinc-200 bg-white hover:border-indigo-400 hover:shadow-md cursor-pointer text-zinc-800"
+                    ? "border-[oklch(0.78_0.14_85)] bg-white shadow-lg ring-2 ring-[oklch(0.78_0.14_85_/_50%)] glow-gold"
+                    : "border-border bg-[oklch(0.97_0.01_255)] hover:border-[oklch(0.78_0.14_85_/_60%)] cursor-pointer"
                 }`}
+                style={{ color: isSelected ? 'oklch(0.09 0.015 255)' : 'oklch(0.15 0.02 255)' }}
               >
-                {value}
+                {/* Top-left corner value */}
+                <span className="absolute top-1 left-1.5 text-[0.55rem] font-bold leading-none opacity-70">
+                  {value}
+                </span>
+                {/* Center value */}
+                <span className="text-lg font-bold">{value}</span>
+                {/* Bottom-right corner value (rotated) */}
+                <span className="absolute bottom-1 right-1.5 text-[0.55rem] font-bold leading-none opacity-70 rotate-180">
+                  {value}
+                </span>
               </button>
             );
           })}

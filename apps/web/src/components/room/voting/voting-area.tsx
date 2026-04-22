@@ -27,7 +27,7 @@ export function VotingArea({ roomState, myUser, isFacilitator, taskName, send }:
       {isFacilitator && <FacilitatorPanel phase={phase} taskName={taskName} send={send} />}
 
       {phase === "voting" && (
-        <>
+        <div className="w-full flex flex-col items-center gap-6 rounded-2xl p-8 felt-surface border border-[oklch(0.25_0.08_165)] shadow-2xl">
           <VotingProgress users={users} />
           {myUser.role === "participant" && (
             <CardDeck
@@ -41,15 +41,21 @@ export function VotingArea({ roomState, myUser, isFacilitator, taskName, send }:
             />
           )}
           <ParticipantCards users={users} myUserId={myUser.id} />
-        </>
+        </div>
       )}
 
       {phase === "revealed" && (
-        <ResultsPanel users={users} votes={votes} stats={stats} nonVoters={nonVoters} />
+        <div className="w-full flex flex-col items-center gap-6 rounded-2xl p-8 bg-card border border-border shadow-2xl">
+          <ResultsPanel users={users} votes={votes} stats={stats} nonVoters={nonVoters} />
+        </div>
       )}
 
       {phase === "waiting" && !isFacilitator && (
-        <p className="text-sm text-zinc-400">Waiting for the facilitator to start voting…</p>
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground">
+            Waiting for the facilitator to start voting…
+          </p>
+        </div>
       )}
     </div>
   );

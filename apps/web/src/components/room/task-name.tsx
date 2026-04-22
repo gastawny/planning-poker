@@ -20,7 +20,7 @@ export function TaskName({ taskName, phase, isFacilitator, value, onChange }: Ta
         placeholder="Task name (optional)"
         maxLength={100}
         aria-label="Task name"
-        className="text-sm text-zinc-600 bg-transparent border-b border-dashed border-zinc-300 focus:border-indigo-500 focus:outline-none placeholder:text-zinc-400 min-w-0 w-48"
+        className="text-sm text-muted-foreground bg-transparent border-b border-dashed border-[oklch(1_0_0_/_15%)] focus:border-[oklch(0.78_0.14_85_/_60%)] focus:outline-none placeholder:text-muted-foreground/50 min-w-0 w-48"
       />
     );
   }
@@ -28,7 +28,7 @@ export function TaskName({ taskName, phase, isFacilitator, value, onChange }: Ta
   if (!taskName) return null;
 
   return (
-    <span className="text-sm text-zinc-600 truncate max-w-xs" title={taskName}>
+    <span className="text-sm text-muted-foreground truncate max-w-xs" title={taskName}>
       {taskName}
     </span>
   );

@@ -1,4 +1,5 @@
 import type { RoomUser, RoundPhase, UserRole } from "@planning-poker/types";
+import { CrownIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -101,9 +102,7 @@ function UserCard({
             {isMe && <span className="text-muted-foreground font-normal"> (you)</span>}
           </span>
           {isHost && (
-            <span aria-label="Host" title="Host" className="text-amber-500 text-xs flex-shrink-0">
-              ★
-            </span>
+            <CrownIcon className="size-3 text-[oklch(0.78_0.14_85)] flex-shrink-0" aria-label="Host" />
           )}
         </div>
         <div className="flex items-center gap-1.5 mt-0.5">
@@ -113,7 +112,7 @@ function UserCard({
               aria-label={user.hasVoted ? "Voted" : "Waiting"}
               title={user.hasVoted ? "Voted" : "Waiting"}
               className={`inline-block w-2 h-2 rounded-full flex-shrink-0 ${
-                user.hasVoted ? "bg-green-500" : "bg-muted-foreground/40"
+                user.hasVoted ? "bg-green-500 animate-pulse" : "bg-muted-foreground/40"
               }`}
             />
           )}

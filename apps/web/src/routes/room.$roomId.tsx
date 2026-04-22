@@ -158,8 +158,14 @@ function RoomPage() {
 
       <header className="bg-card border-b border-border px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
-          <h1 className="text-base font-semibold text-foreground flex-shrink-0">
-            Room <span className="font-mono text-primary">{roomId}</span>
+          <h1
+            className="text-sm font-semibold text-muted-foreground flex-shrink-0 uppercase tracking-widest"
+            style={{ fontFamily: "'Cinzel', serif" }}
+          >
+            Room{' '}
+            <span className="text-[oklch(0.78_0.14_85)] font-mono text-base tracking-normal normal-case">
+              {roomId}
+            </span>
           </h1>
           {roomState && (
             <>
@@ -211,7 +217,7 @@ function RoomPage() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-72 flex-shrink-0 bg-card border-r border-border overflow-y-auto p-4">
+        <aside className="w-72 flex-shrink-0 bg-[oklch(0.07_0.015_255)] border-r border-border overflow-y-auto p-4">
           {roomState && myUserId ? (
             <UserList
               users={roomState.users}
