@@ -62,7 +62,12 @@
 
 /* Glow effect */
 .glow-gold {
-  box-shadow: 0 0 20px oklch(0.78 0.14 85 / 30%), 0 0 60px oklch(0.78 0.14 85 / 10%);
+  transform: scale(1.12);
+  box-shadow:
+    0 0 0 2px oklch(0.78 0.14 85),
+    0 0 18px oklch(0.78 0.14 85 / 80%),
+    0 0 48px oklch(0.78 0.14 85 / 45%),
+    0 8px 24px oklch(0 0 0 / 45%);
 }
 
 @theme inline {

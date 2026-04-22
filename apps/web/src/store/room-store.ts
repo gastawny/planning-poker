@@ -81,15 +81,25 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     set((s) => {
       if (!s.roomState) return {};
       const exists = s.roomState.users.some((u) => u.id === user.id);
-      if (exists) return {};
-      return { roomState: { ...s.roomState, users: [...s.roomState.users, user] } };
+      if (exists) {
+        return {
+          roomState: {
+            ...s.roomState,
+            users: s.roomState.users.map((u) => (u.id === user.id ? { ...user, online: true } : u)),
+          },
+        };
+      }
+      return { roomState: { ...s.roomState, users: [...s.roomState.users, { ...user, online: true }] } };
     }),
 
   handleUserLeft: (userId) =>
     set((s) => {
       if (!s.roomState) return {};
       return {
-        roomState: { ...s.roomState, users: s.roomState.users.filter((u) => u.id !== userId) },
+        roomState: {
+          ...s.roomState,
+          users: s.roomState.users.map((u) => (u.id === userId ? { ...u, online: false } : u)),
+        },
       };
     }),
 

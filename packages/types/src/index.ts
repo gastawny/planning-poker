@@ -8,6 +8,7 @@ export interface RoomUser {
   role: UserRole;
   hasVoted: boolean;
   connectedAt: number;
+  online?: boolean;
 }
 
 export interface RoomState {

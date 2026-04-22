@@ -27,9 +27,9 @@ export function VotingArea({ roomState, myUser, isFacilitator, taskName, send }:
       {isFacilitator && <FacilitatorPanel phase={phase} taskName={taskName} send={send} />}
 
       {phase === "voting" && (
-        <div className="w-full flex flex-col items-center gap-6 rounded-2xl p-8 felt-surface border border-[oklch(0.25_0.08_165)] shadow-2xl">
+        <div className="w-full flex flex-col items-center gap-8 rounded-2xl p-8 felt-surface border border-[oklch(0.25_0.08_165)] shadow-2xl">
           <VotingProgress users={users} />
-          {myUser.role === "participant" && (
+          {myUser.role !== "spectator" && (
             <CardDeck
               scale={scale}
               specialCards={specialCards}

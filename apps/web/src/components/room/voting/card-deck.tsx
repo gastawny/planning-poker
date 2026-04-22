@@ -50,7 +50,7 @@ export function CardDeck({
                 onClick={() => handleCardClick(value)}
                 className={`relative w-14 h-20 rounded-lg border-2 flex items-center justify-center text-lg font-bold transition-all duration-200 select-none card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isSelected
-                    ? "border-[oklch(0.78_0.14_85)] bg-white shadow-lg ring-2 ring-[oklch(0.78_0.14_85_/_50%)] glow-gold"
+                    ? "border-[oklch(0.78_0.14_85)] bg-white glow-gold"
                     : "border-border bg-[oklch(0.97_0.01_255)] hover:border-[oklch(0.78_0.14_85_/_60%)] cursor-pointer"
                 }`}
                 style={{ color: isSelected ? 'oklch(0.09 0.015 255)' : 'oklch(0.15 0.02 255)' }}
@@ -71,11 +71,14 @@ export function CardDeck({
         </div>
       </div>
 
-      {selectedVote !== null && (
-        <Button variant="ghost" size="sm" onClick={handleRetract}>
-          Retract vote
-        </Button>
-      )}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={handleRetract}
+        className={selectedVote === null ? "invisible" : ""}
+      >
+        Retract vote
+      </Button>
     </div>
   );
 }

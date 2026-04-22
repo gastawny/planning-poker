@@ -82,18 +82,32 @@ function UserCard({
 }: UserCardProps) {
   const isMe = user.id === myUserId;
   const isHost = user.id === hostId;
-  const showVoteStatus = phase === "voting" && user.role === "participant";
-  const showContextMenu = isFacilitator && !isMe && user.role !== "facilitator";
-  const showSelfToggle = isMe && user.role !== "facilitator";
+  const isOffline = user.online === false;
+  const showVoteStatus = !isOffline && phase === "voting" && user.role === "participant";
+  const showContextMenu = isFacilitator && !isMe && user.role !== "facilitator" && !isOffline;
+  const showSelfToggle = isMe && user.role !== "facilitator" && !isOffline;
   const toggleRole = user.role === "participant" ? "spectator" : "participant";
 
   return (
-    <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-muted/50 group">
-      <Avatar className={avatarColor(user.name)} aria-hidden="true">
-        <AvatarFallback className="text-white text-xs font-semibold bg-transparent">
-          {initials(user.name)}
-        </AvatarFallback>
-      </Avatar>
+    <div
+      className={`flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-muted/50 group transition-opacity ${
+        isOffline ? "opacity-40" : ""
+      }`}
+    >
+      <div className="relative flex-shrink-0">
+        <Avatar className={avatarColor(user.name)} aria-hidden="true">
+          <AvatarFallback className="text-white text-xs font-semibold bg-transparent">
+            {initials(user.name)}
+          </AvatarFallback>
+        </Avatar>
+        {isOffline && (
+          <span
+            className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-muted-foreground/60 border-2 border-background"
+            aria-label="Offline"
+            title="Disconnected"
+          />
+        )}
+      </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 min-w-0">
@@ -106,15 +120,21 @@ function UserCard({
           )}
         </div>
         <div className="flex items-center gap-1.5 mt-0.5">
-          <Badge variant={roleVariant[user.role]}>{roleLabel[user.role]}</Badge>
-          {showVoteStatus && (
-            <span
-              aria-label={user.hasVoted ? "Voted" : "Waiting"}
-              title={user.hasVoted ? "Voted" : "Waiting"}
-              className={`inline-block w-2 h-2 rounded-full flex-shrink-0 ${
-                user.hasVoted ? "bg-green-500 animate-pulse" : "bg-muted-foreground/40"
-              }`}
-            />
+          {isOffline ? (
+            <span className="text-xs text-muted-foreground">Offline</span>
+          ) : (
+            <>
+              <Badge variant={roleVariant[user.role]}>{roleLabel[user.role]}</Badge>
+              {showVoteStatus && (
+                <span
+                  aria-label={user.hasVoted ? "Voted" : "Waiting"}
+                  title={user.hasVoted ? "Voted" : "Waiting"}
+                  className={`inline-block w-2 h-2 rounded-full flex-shrink-0 ${
+                    user.hasVoted ? "bg-green-500 animate-pulse" : "bg-muted-foreground/40"
+                  }`}
+                />
+              )}
+            </>
           )}
         </div>
       </div>

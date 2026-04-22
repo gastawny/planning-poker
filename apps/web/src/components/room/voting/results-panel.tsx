@@ -16,7 +16,6 @@ export function ResultsPanel({ users, votes, stats, nonVoters }: ResultsPanelPro
     return () => cancelAnimationFrame(id);
   }, []);
 
-  const participants = users.filter((u) => u.role === "participant");
   const voterEntries = Object.entries(votes);
 
   const nonVoterNames = nonVoters
@@ -46,7 +45,7 @@ export function ResultsPanel({ users, votes, stats, nonVoters }: ResultsPanelPro
           <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Votes</p>
           <div className="flex flex-wrap gap-4 justify-center">
             {voterEntries.map(([userId, value], index) => {
-              const user = participants.find((u) => u.id === userId);
+              const user = users.find((u) => u.id === userId);
               return (
                 <div key={userId} className="flex flex-col items-center gap-1.5">
                   <div

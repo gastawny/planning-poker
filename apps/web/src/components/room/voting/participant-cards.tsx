@@ -6,7 +6,7 @@ interface ParticipantCardsProps {
 }
 
 export function ParticipantCards({ users, myUserId }: ParticipantCardsProps) {
-  const others = users.filter((u) => u.role === "participant" && u.id !== myUserId);
+  const others = users.filter((u) => u.role !== "spectator" && u.id !== myUserId && u.online !== false);
 
   if (others.length === 0) return null;
 

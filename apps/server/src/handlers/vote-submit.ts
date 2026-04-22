@@ -23,8 +23,8 @@ export async function handleVoteSubmit(
   }
 
   const caller = room.users.find((u) => u.id === callerId);
-  if (!caller || caller.role !== "participant") {
-    sendError(ws, ErrorCode.PERMISSION_DENIED, "Only participants can submit votes");
+  if (!caller || caller.role === "spectator") {
+    sendError(ws, ErrorCode.PERMISSION_DENIED, "Spectators cannot submit votes");
     return;
   }
 

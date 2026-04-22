@@ -131,10 +131,12 @@ export function useRoomSocket(roomId: string) {
         clearTimeout(reconnectTimerRef.current);
       }
       if (wsRef.current) {
-        wsRef.current.close(1000, "component unmounted");
+        if (wsRef.current.readyState !== WebSocket.CONNECTING) {
+          wsRef.current.close(1000, "component unmounted");
+        }
         wsRef.current = null;
       }
-      setConnectionStatus("disconnected");
+      useRoomStore.getState().reset();
     };
   }, [connect, setConnectionStatus]);
 

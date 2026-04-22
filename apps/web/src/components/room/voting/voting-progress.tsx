@@ -5,7 +5,7 @@ interface VotingProgressProps {
 }
 
 export function VotingProgress({ users }: VotingProgressProps) {
-  const participants = users.filter((u) => u.role === "participant");
+  const participants = users.filter((u) => u.role === "participant" && u.online !== false);
   const voted = participants.filter((u) => u.hasVoted).length;
   const total = participants.length;
   const pct = total > 0 ? (voted / total) * 100 : 0;
